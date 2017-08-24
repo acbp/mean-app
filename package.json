@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "npm t",
-    "wnode":"./node_modules/.bin/nodemon ",
+    "wnode":"./node_modules/.bin/nodemon -i ./node_modules -d 1",
     "try":"echo $npm_package_main"
   },
   "keywords": [

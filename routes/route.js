@@ -1,12 +1,19 @@
 //depenedencias
 const express = require('express');
-const Routes = express.Routes();
+const router = express.Router();
 
 //configuracoes de rotas
-const products = require('products');
-const categories = require('categories');
+const products = require('./products');
+const categories = require('./categories');
 
-products.setup(Routes);
-categories.setup(Routes);
+products(router);
+categories(router);
 
-module.exports = Routes;
+//middleware api
+router.get('/',(req,res,nxt) => {
+  //TODO - deve pegar qual é o tipo de de autenticacao escolhida?
+  //TODO - auth
+  res.send(``);
+})
+
+module.exports = router;
