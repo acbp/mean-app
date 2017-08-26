@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "systemctrl restart mongodb.service && npm run wnode",
-    "wnode":"./node_modules/.bin/nodemon -i ./node_modules -d 1",
-    "try":"echo $npm_package_main"
+    "wnode": "./node_modules/.bin/nodemon -i ./node_modules -d 1",
+    "try": "echo $npm_package_main"
   },
   "keywords": [
     "javascript",
@@ -28,6 +28,7 @@
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
     "express": "^4.15.4",
-    "mongoose": "^4.11.7"
+    "mongoose": "^4.11.7",
+    "uuid": "^3.1.0"
   }
 }

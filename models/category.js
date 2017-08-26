@@ -1,3 +1,4 @@
+//TODO - atualziar como foi feito com prodct.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const CategorySchema = Schema({
