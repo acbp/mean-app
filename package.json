@@ -4,7 +4,7 @@
   "description": "lista de produtos organizados por categorias",
   "main": "app.js",
   "scripts": {
-    "test": "npm t",
+    "test": "systemctrl restart mongodb.service && npm run wnode",
     "wnode":"./node_modules/.bin/nodemon -i ./node_modules -d 1",
     "try":"echo $npm_package_main"
   },
