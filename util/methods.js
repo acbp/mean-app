@@ -1,6 +1,6 @@
 
 //valida existencia de uma propriedade
-exports.hasOwnProperty = (elm, param) => {console.log(elm, param);
+exports.hasOwnProperty = (elm, param) => {
   return elm.hasOwnProperty(param);
 }
 
