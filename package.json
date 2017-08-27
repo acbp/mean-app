@@ -4,6 +4,7 @@
   "description": "lista de produtos organizados por categorias",
   "main": "app.js",
   "scripts": {
+    "start": "./node_modules/.bin/opn http://localhost:1337/ && node app.js",
     "test": "npm run wnode",
     "wnode": "./node_modules/.bin/nodemon -i ./node_modules -d 1",
     "try": "echo $npm_package_main"
@@ -21,14 +22,15 @@
   "devDependencies": {
     "bower": "^1.8.0",
     "gulp": "^3.9.1",
+    "http-server": "^0.10.0",
     "mocha": "^3.5.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "opn-cli": "^3.1.0"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
     "express": "^4.15.4",
-    "mongoose": "^4.11.7",
-    "uuid": "^3.1.0"
+    "mongoose": "^4.11.7"
   }
 }
