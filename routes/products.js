@@ -1,46 +1,34 @@
-//fazer tratamentos de rotas para categorias
 //Schema/modelo de produtos
 const Product = require('../models/product');
+const {hasOwnProperty, hasOwnPropertyArr, validate, validateArr } = require('../util/methods');
+const exceptions = require('../util/methods').exceptions.bind({},'products');
 
-//TODO - adicionar exceptions, hasOwnProperty e hasOwnPropertys em arquivo de "util"
-function exceptions(name,res,error) {
-  // deve usar res.status(status).send(msg)
-  res.send(`exception[${name}]:${error}`)
-}
-exceptions=exceptions.bind({},'products');
-
-//valida existencia de uma propriedade
-function hasOwnProperty(elm, param) {
-  return elm.hasOwnProperty(param);
-}
-
-//verifica existencia de um conjunto de propriedades
-function hasOwnPropertyArr(elm, params) {
-  return params.some(Array.hasOwnProperty.bind(elm))
-}
-
-//valida nulidade
-function validate(e, param) {
-  console.log(`${param} = ${e.hasOwnProperty(param)} && ${!e[param]}`);
-  return e.hasOwnProperty(param) && e[param];
-}
-
-//valida nulidade de um conjunto
-function validateArr(e, params) {
-  return !params.every(validate.bind(e,e));
-}
+// exceptions(
+//  {
+//   status:(m) => {
+//       console.log(`status ${m}`);
+//     },
+//     send:(l) => {
+//       console.log(`msg ${l}`);
+//     }
+//   },'blabla',200
+// )
 
 //configura rotas dos métodos de produtos
 const setup = (router) => {
   // pega todos
   router.get('/products',(req,res,nxt) => {
-    // res.send(`pega produtos`);
-    // return;
-
     //TODO - verificar paginação
-    // retorna todos os produtos
+
     Product.find((err,product) => {
-      if(err) return exceptions(res,err);
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+      //se estiver vazio retorn 204
+      if (!validate(product,'length') ) {
+        return res.status(204).end()
+      }
       res.json(product);
     });
   })
@@ -53,19 +41,25 @@ const setup = (router) => {
     //TODO - validar categorias
 
     newProduct.save((err,product) => {
-      if(err) return exceptions(res,err);
-      res.json({msg:'Produto salvo'})
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+      res.json({msg:MSG.SUCCESS.SAVED,id:result._id})
     })
   })
 
   // pega item com id
   router.get('/products/:id',(req,res,nxt) => {
     if(hasOwnProperty(req,'id')) {
-      return res.json({msg:"Sem paramêtro 'id'"})
+      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
     }
 
     Product.findOne({_id:req.params.id},(err, result) => {
-      if(err) return exceptions(res,err);
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
       res.json(result)
     })
   })
@@ -76,41 +70,57 @@ const setup = (router) => {
 
     //verifica id
     if(hasOwnProperty(req,'id')) {
-      return res.json({msg:"Sem paramêtro 'id'"});
+      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
     }
 
     // valida parametros
     if(validateArr(body,['name','description'])){
-      return res.json({msg:"Há paramêtros invalidos."});
+      return res.json({msg:MSG.ERROR.INVALID_PARAMS});
     }
 
     let newProduct = new Product( Product.factory(data) );
-
-    Product.findByIdAndUpdate(
-      //id
-      data.id,
-      // dados a serem atualizados
-      {
+    let dataUpdated={
         $set:body
-      },
-      // callback
+      };
+
+    //acha e atualiza
+    Product.findByIdAndUpdate(
+      data.id,
+      dataUpdated,
       (err,result) => {
-          if(err) return exceptions(res,err);
-          res.status(200).send("Produto atualizado")
+          if(err) {
+            res.status(500);
+            return exceptions(res,err)
+          }
+
+          //caso id não exista
+          if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
+
+          res.status(200).json({msg:MSG.SUCCESS.UPDATED,id:result._id})
       }
     )
   })
 
   // deleta item com id
   router.delete('/products/:id',(req,res,nxt) => {
+    let data = req.params;
+
     if(hasOwnProperty(req,'id')){
-      return res.json({msg:"Sem paramêtro 'id'"})
+      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
     }
 
     Product.remove({_id:req.params.id},(err, result) => {
-      if(err) return exceptions(res,err);
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+
+      //caso id não exista
+      if(!result) return res.status(204).end();
+
       //TODO - atualizar lista de categorias do produto deletado
-      res.json({msg:"Produto removido."})
+
+      res.status(200).json({msg:MSG.SUCCESS.DELETED})
     })
   })
 }

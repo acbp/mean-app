@@ -1,26 +1,38 @@
 //TODO - atualziar como foi feito com prodct.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const CategorySchema = Schema({
-  _id: Schema.Types.ObjectId,
-  name:{
-    type:String,
-    required:true,
-    unique:true,
-    lowercase: true
-  },
-  description:{
-    type:String,
-    required:false,
-    lowercase: true
-  },
-  updated: { type: Date, default: Date.now }
-  //TODO - verificar formatos para armazenamento de imagens
-  // ,picture:{
-  //   type:Buffer [Buffer] ,
-  //   required:false
-  // }
 
-});
+//TODO - verificar formatos para armazenamento de imagens
+const CategorySchema = Schema(
+  {
+    name:{
+      type:String,
+      required:true,
+      unique:true,
+      lowercase: true
+    },
+    description:{
+      type:String,
+      required:false,
+      lowercase: true
+    },
+    updated: { type: Date, default: Date.now }
 
-const Category = module.exports = mongoose.model('Category',CategorySchema);
+    // ,picture:{
+    //   type:Buffer [Buffer] ,
+    //   required:false
+    // }
+  },
+  {
+    timestamps:true
+  }
+);
+
+const Category = mongoose.model('Category',CategorySchema);
+Category.factory=(data) => {
+  return new Category( {
+    name:data.name,
+    description:data.description
+  })
+}
+module.exports = Category;
