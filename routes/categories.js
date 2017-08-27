@@ -21,16 +21,16 @@ const setup = (router) => {
   router.get('/categories',(req,res,nxt) => {
     //TODO - verificar paginação
 
-    Category.find((err,category) => {
+    Category.find((err,result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
       }
       //se estiver vazio retorn 204
-      if (!validate(category,'length') ) {
+      if (!validate(result,'length') ) {
         return res.status(204).end()
       }
-      res.json(category);
+      res.json(result);
     });
   })
 
@@ -41,7 +41,7 @@ const setup = (router) => {
 
     //TODO - validar categorias
 
-    newCategory.save((err,category) => {
+    newCategory.save((err,result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
@@ -52,15 +52,15 @@ const setup = (router) => {
 
   // pega item com id
   router.get('/categories/:id',(req,res,nxt) => {
-    if(hasOwnProperty(req,'id')) {
-      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
-    }
+    let data = req.params;
 
     Category.findOne({_id:req.params.id},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
       }
+      //caso id não exista
+      if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
       res.json(result)
     })
   })
@@ -69,16 +69,11 @@ const setup = (router) => {
   router.put('/categories/:id',(req,res,nxt) => {
     let data = req.params, body = req.body;
 
-    //verifica id
-    if(hasOwnProperty(req,'id')) {
-      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
-    }
-
     // valida parametros
     if(validateArr(body,['name','description'])){
       return res.json({msg:MSG.ERROR.INVALID_PARAMS});
     }
-
+    
     let newCategory = new Category( Category.factory(data) );
     let dataUpdated={
       $set:body
@@ -93,8 +88,10 @@ const setup = (router) => {
             res.status(500);
             return exceptions(res,err)
           }
+
           //caso id não exista
           if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
+
           res.status(200).json({msg:MSG.SUCCESS.UPDATED,id:result._id})
       }
     )
@@ -104,11 +101,7 @@ const setup = (router) => {
   router.delete('/categories/:id',(req,res,nxt) => {
     let data = req.params;
 
-    if(hasOwnProperty(req,'id')){
-      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
-    }
-
-    Category.findOneAndRemove({id:data.id},(err, result) => {
+    Category.findOneAndRemove({_id:data.id},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
@@ -119,7 +112,7 @@ const setup = (router) => {
 
       //TODO - atualizar lista de categorias do produto deletado
 
-      res.status(200).json({msg:MSG.SUCCESS.DELETED})
+      res.status(200).json({msg:MSG.SUCCESS.DELETED,data:result})
     })
   })
 }

@@ -1,6 +1,6 @@
 
 //valida existencia de uma propriedade
-exports.hasOwnProperty = (elm, param) => {
+exports.hasOwnProperty = (elm, param) => {console.log(elm, param);
   return elm.hasOwnProperty(param);
 }
 
@@ -12,7 +12,7 @@ exports.hasOwnPropertyArr =(elm, params)=> {
 //valida nulidade
 exports.validate = (e, param) =>{
   //FIXME - Não está validando nulidade corretamente. não
-  return e.hasOwnProperty(param) && (e[param] || e[param] !== '' ||e[param] !== 0 || e[param] === false);
+  return e.hasOwnProperty(param) && (e[param] || e[param] !== 0 || e[param] === false);
 }
 
 //valida nulidade de um conjunto

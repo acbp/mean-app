@@ -2,6 +2,7 @@
 const Product = require('../models/product');
 const {hasOwnProperty, hasOwnPropertyArr, validate, validateArr } = require('../util/methods');
 const exceptions = require('../util/methods').exceptions.bind({},'products');
+const MSG = require('../util/strings').MSG;
 
 // exceptions(
 //  {
@@ -20,16 +21,16 @@ const setup = (router) => {
   router.get('/products',(req,res,nxt) => {
     //TODO - verificar paginação
 
-    Product.find((err,product) => {
+    Product.find((err,result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
       }
       //se estiver vazio retorn 204
-      if (!validate(product,'length') ) {
+      if (!validate(result,'length') ) {
         return res.status(204).end()
       }
-      res.json(product);
+      res.json(result);
     });
   })
 
@@ -40,7 +41,7 @@ const setup = (router) => {
 
     //TODO - validar categorias
 
-    newProduct.save((err,product) => {
+    newProduct.save((err,result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
@@ -51,15 +52,15 @@ const setup = (router) => {
 
   // pega item com id
   router.get('/products/:id',(req,res,nxt) => {
-    if(hasOwnProperty(req,'id')) {
-      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
-    }
+    let data = req.params;
 
     Product.findOne({_id:req.params.id},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
       }
+      //caso id não exista
+      if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
       res.json(result)
     })
   })
@@ -67,11 +68,6 @@ const setup = (router) => {
   // editar item com id
   router.put('/products/:id',(req,res,nxt) => {
     let data = req.params, body = req.body;
-
-    //verifica id
-    if(hasOwnProperty(req,'id')) {
-      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
-    }
 
     // valida parametros
     if(validateArr(body,['name','description'])){
@@ -105,22 +101,18 @@ const setup = (router) => {
   router.delete('/products/:id',(req,res,nxt) => {
     let data = req.params;
 
-    if(hasOwnProperty(req,'id')){
-      return res.json({msg:MSG.ERROR.NO_ID_PARAM})
-    }
-
-    Product.remove({_id:req.params.id},(err, result) => {
+    Product.findOneAndRemove({_id:data.id},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
       }
-
+      
       //caso id não exista
       if(!result) return res.status(204).end();
 
       //TODO - atualizar lista de categorias do produto deletado
 
-      res.status(200).json({msg:MSG.SUCCESS.DELETED})
+      res.status(200).json({msg:MSG.SUCCESS.DELETED,data:result})
     })
   })
 }
