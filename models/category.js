@@ -1,8 +1,6 @@
-//TODO - atualziar como foi feito com prodct.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//TODO - verificar formatos para armazenamento de imagens
 const CategorySchema = Schema(
   {
     name:{
@@ -15,9 +13,8 @@ const CategorySchema = Schema(
       type:String,
       required:false,
       lowercase: true
-    },
-    updated: { type: Date, default: Date.now }
-
+    }
+    //TODO - verificar formatos para armazenamento de imagens
     // ,picture:{
     //   type:Buffer [Buffer] ,
     //   required:false

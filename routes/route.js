@@ -10,10 +10,10 @@ products(router);
 categories(router);
 
 //middleware api
-router.get('/',(req,res,nxt) => {
-  //TODO - deve pegar qual é o tipo de de autenticacao escolhida?
-  //TODO - auth
-  res.send(``);
-})
+// router.get('/',(req,res,nxt) => {
+//   //TODO - deve pegar qual é o tipo de de autenticacao escolhida?
+//   //TODO - auth
+//   res.send(``);
+// })
 
 module.exports = router;

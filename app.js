@@ -5,7 +5,7 @@ const express = require('express');
 const path = require('path');
 
 //configuracao do server
-const config = require('./config');
+const config = require('./util/config');
 const connection = require('./util/connection');
 const apiRoute = require('./routes/route');
 

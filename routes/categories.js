@@ -54,13 +54,28 @@ const setup = (router) => {
   router.get('/categories/:id',(req,res,nxt) => {
     let data = req.params;
 
-    Category.findOne({_id:req.params.id},(err, result) => {
+    Category.findOne({_id:data.id},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
       }
       //caso id não exista
       if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
+      res.json(result)
+    })
+  })
+
+  // pega item com nome
+  router.get('/categoriesByName/:name',(req,res,nxt) => {
+    let data = req.params;
+    console.log(data.name);
+    Category.findOne({name:data.name},(err, result) => {
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+      //caso id não exista
+      if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.name})
       res.json(result)
     })
   })
@@ -73,7 +88,7 @@ const setup = (router) => {
     if(validateArr(body,['name','description'])){
       return res.json({msg:MSG.ERROR.INVALID_PARAMS});
     }
-    
+
     let newCategory = new Category( Category.factory(data) );
     let dataUpdated={
       $set:body

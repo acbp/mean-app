@@ -54,7 +54,7 @@ const setup = (router) => {
   router.get('/products/:id',(req,res,nxt) => {
     let data = req.params;
 
-    Product.findOne({_id:req.params.id},(err, result) => {
+    Product.findOne({_id:data.id},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)
@@ -64,6 +64,37 @@ const setup = (router) => {
       res.json(result)
     })
   })
+
+  // pega item com nome
+  router.get('/productsByName/:name',(req,res,nxt) => {
+    let data = req.params;
+
+    Product.findOne({name:data.name},(err, result) => {
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+      //caso id não exista
+      if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.name})
+      res.json(result)
+    })
+  })
+
+  // pega item com categorias
+  router.get('/productsByCategory/:categories',(req,res,nxt) => {
+    let data = req.params;
+
+    Product.find({categories:data.categories},(err, result) => {
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+      //caso id não exista
+      if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.categories})
+      res.json(result)
+    })
+  })
+
 
   // editar item com id
   router.put('/products/:id',(req,res,nxt) => {
@@ -106,7 +137,7 @@ const setup = (router) => {
         res.status(500);
         return exceptions(res,err)
       }
-      
+
       //caso id não exista
       if(!result) return res.status(204).end();
 
