@@ -29,8 +29,10 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
+    "connect-multiparty": "^2.0.0",
     "cors": "^2.8.4",
     "express": "^4.15.4",
+    "gridfs-stream": "^1.1.1",
     "mongoose": "^4.11.7"
   }
 }

@@ -13,12 +13,12 @@ const CategorySchema = Schema(
       type:String,
       required:false,
       lowercase: true
+    },
+    pictures:{
+        picture_id:String,
+        filename:String,
+        format:String
     }
-    //TODO - verificar formatos para armazenamento de imagens
-    // ,picture:{
-    //   type:Buffer [Buffer] ,
-    //   required:false
-    // }
   },
   {
     timestamps:true

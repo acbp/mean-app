@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+const Gridfs = require('gridfs-stream');
+const mongoDriver = mongoose.mongo;
 const OPEN='open';
 const CONNECTED='connected';
 const CLOSE='close';
 const ERROR='error';
+var _gfs;
 
 const listeners={
   db:'',
@@ -35,20 +38,12 @@ function closeConnection() {
   return connection;
 }
 
-const connection = {
-  to:connect,
-  once:addOnceListener,
-  on:addListener,
-  close:closeConnection,
-  OPEN:OPEN,
-  CONNECTED:CONNECTED,
-  CLOSE:CLOSE,
-  ERROR:ERROR
-}
-module.exports = (url) => {
+
+function setup(url) {
   connect(url);
   addOnceListener(CONNECTED,() => {
     console.log(`[ Mongodb @ ${url} ]`);
+    // configura GridFS para armazenamento de imagens
   })
   addListener(ERROR,(err) => {
     if(err){
@@ -56,4 +51,19 @@ module.exports = (url) => {
     }
   })
   return connection;
-};
+}
+
+const connection = {
+  setup:setup,
+  to:connect,
+  once:addOnceListener,
+  on:addListener,
+  gfs:() => new Gridfs(mongoose.connection.db, mongoose.mongo),
+  close:closeConnection,
+  OPEN:OPEN,
+  CONNECTED:CONNECTED,
+  CLOSE:CLOSE,
+  ERROR:ERROR
+}
+
+module.exports = connection;

@@ -17,7 +17,7 @@ const db_url = config.DB;
 const publicFolder = config.PUBLIC_FOLDER;
 
 // configura conexão com banco
-connection( db_url);
+connection.setup( db_url);
 
 //aplicacao
 const app = express();

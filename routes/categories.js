@@ -3,17 +3,9 @@ const Category = require('../models/category');
 const {hasOwnProperty, hasOwnPropertyArr, validate, validateArr } = require('../util/methods');
 const exceptions = require('../util/methods').exceptions.bind({},'categories');
 const MSG = require('../util/strings').MSG;
-
-// exceptions(
-//  {
-//   status:(m) => {
-//       console.log(`status ${m}`);
-//     },
-//     send:(l) => {
-//       console.log(`msg ${l}`);
-//     }
-//   },'blabla',200
-// )
+const multiparty = require('connect-multiparty')();
+const gfs = require('../util/connection').gfs;
+const fs = require('fs');
 
 //configura rotas dos métodos de categoria
 const setup = (router) => {
@@ -50,6 +42,99 @@ const setup = (router) => {
     })
   })
 
+
+  // recebe imagem do categoria.
+  router.post('/categories/picture/:id',multiparty,(req,res,nxt) => {
+    let data=req.params, files = req.files.image;
+
+    // se maior q 3.8 MiB impede upload.
+    if(files.size > 32735232  ){
+      return res.status(400).json({msg:MSG.ERROR.TOO_LARGE})
+    }
+
+    //cria fluxo de escrita
+    let writestream = gfs().createWriteStream({
+     filename: files.name,
+     mode: 'w',
+     content_type: files.type,
+     metadata: req.body
+    });
+
+    //cria arquivo em memoria
+    fs.createReadStream(files.path).pipe(writestream);
+
+    // ao terminar de baixar aquivo salva em banco
+    writestream.on('close', (file) => {
+      let path = `${req.headers.origin}/api/categories/picture/${file._id}`;
+
+      //acha o categoria que será inserido a imagem
+      Category.findById(data.id, (err, category) => {
+        if(err) {
+          res.status(500);
+          return exceptions(res,err)
+        }
+
+        //TODO - remover imagem anterior
+
+        //adiciona dados da imagem no categoria
+        category.pictures= {
+          picture_id:file._id,
+          filename: files.name,
+          format:files.type,
+          src:path
+        };
+
+        //salva
+        category.save((err, result) =>{
+          if(err) {
+            res.status(500);
+            return exceptions(res,err)
+          }
+          return res.status(200).json(
+            {
+              msg:MSG.SUCCESS.UPDATED,
+              id:data.id,
+              src:path
+            }
+          )
+        })
+      });
+
+      //limpa memoria ref da imagems após upload para banco
+      fs.unlink(files.path, (err)=> {
+        if(err) {
+          res.status(500);
+          return exceptions(res,err)
+        }
+      });
+   });
+  })
+
+  // retorna imagem
+  router.get('/categories/picture/:id',(req,res,nxt) => {
+    let data = req.params;
+
+    //acha categoria com foto
+    Category.findOne({"pictures.picture_id":data.id}, (err, category) => {
+      if(err) {
+        res.status(500)
+        return exceptions(res,err)
+      }
+
+      //inicia leitura de imagem do banco
+      let readstream = gfs().createReadStream({
+         _id: req.params.id
+      });
+
+      readstream.on("error", function(err){
+        res.status(204).end();
+      });
+
+      //envia stream para usuario
+      readstream.pipe(res);
+    })
+  })
+
   // pega item com id
   router.get('/categories/:id',(req,res,nxt) => {
     let data = req.params;
@@ -68,7 +153,7 @@ const setup = (router) => {
   // pega item com nome
   router.get('/categoriesByName/:name',(req,res,nxt) => {
     let data = req.params;
-    console.log(data.name);
+
     Category.findOne({name:data.name},(err, result) => {
       if(err) {
         res.status(500);
@@ -125,7 +210,7 @@ const setup = (router) => {
       //caso id não exista
       if(!result) return res.status(204).end();
 
-      //TODO - atualizar lista de categorias do produto deletado
+      //TODO - atualizar lista de categorias do categoria deletado
 
       res.status(200).json({msg:MSG.SUCCESS.DELETED,data:result})
     })

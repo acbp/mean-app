@@ -18,6 +18,7 @@ exports.MSG = {
   "ERROR":{
     "INVALID_PARAMS":"Há paramêtros invalidos.",
     "NO_ID_PARAM":"Sem paramêtro 'id'",
-    "NOT_FOUND":"Item não encontrado."
+    "NOT_FOUND":"Item não encontrado.",
+    "TOO_LARGE":"O arquivo deve ter no máximo 3.8 MiB"
   }
 };

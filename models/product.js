@@ -21,12 +21,17 @@ const ProductSchema = Schema(
         }
       ],
       index:true
+    },
+    pictures:{
+      type:[
+        {
+          picture_id:String,
+          filename:String,
+          format:String,
+          src:String
+        }
+      ]
     }
-    //TODO - verificar formatos para armazenamento de imagens
-    // ,picture:{
-    //   type:Array,
-    //   required:false
-    // }
   },
   {
     timestamps:true

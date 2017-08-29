@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>E-Commerce simples</title>
+  </head>
+  <body>
+    <input type="file" id="file" name="file">
+    <button onclick="submit()">Submit</button>
+
+    <img id="uploaded" >
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script >
+      function submit(){
+        var formData = new FormData();
+        var imagefile = document.querySelector('#file');
+
+        formData.append("image", imagefile.files[0]);
+
+        axios.post('http://localhost:1337/api/categories/picture/59a35d68fdb16a11439ad51b', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        }).then((res) => {
+          console.info('SUCCESS',res);
+
+          var image = document.body.querySelector("#uploaded")
+          image.src=res.data.src;
+
+        }).catch((err) => {
+          console.error(err);
+        })
+      }
+    </script>
+  </body>
+</html>
