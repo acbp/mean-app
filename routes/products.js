@@ -7,6 +7,34 @@ const multiparty = require('connect-multiparty')();
 const gfs = require('../util/connection').gfs;
 const fs = require('fs');
 
+// deleta imagem do banco
+const deletarImagem =(gridfs,query,success,error) => {
+  gridfs.exist(query, (err, found)=>{
+    if(err) {
+      console.error(MSG.ERROR.ON_DELETE);
+      return error && error(err);
+    }
+
+    // msg de não encontrado
+    if(!found){
+      console.error(MSG.ERROR.NOT_FOUND);
+      return error && error(err);
+    }
+
+    gridfs.remove(query, (err)=>{
+
+      if(err) {
+        console.error(MSG.ERROR.ON_DELETE);
+        return error && error(err);
+      }
+      console.log(MSG.SUCCESS.DELETED)  ;
+      if(success){
+        success();
+      }
+    });
+  });
+}
+
 //configura rotas dos métodos de produtos
 const setup = (router) => {
   // pega todos
@@ -28,7 +56,7 @@ const setup = (router) => {
 
   // recebe imagem do produto.
   router.post('/products/picture/:id',multiparty,(req,res,nxt) => {
-    let data=req.params, files = req.files.image;
+    let data=req.params, files = req.files.image, gridfs=gfs();
 
     // se maior q 3.8 MiB impede upload.
     if(files.size > 32735232  ){
@@ -36,7 +64,7 @@ const setup = (router) => {
     }
 
     //cria fluxo de escrita
-    let writestream = gfs().createWriteStream({
+    let writestream = gridfs.createWriteStream({
      filename: files.name,
      mode: 'w',
      content_type: files.type,
@@ -48,13 +76,25 @@ const setup = (router) => {
 
     // ao terminar de baixar aquivo salva em banco
     writestream.on('close', (file) => {
-      let path = `${req.headers.origin}/api/products/picture/${file._id}`;
+      let path = `/api/products/picture/${file._id}`;
 
       //acha o produto que será inserido a imagem
       Product.findById(data.id, (err, product) => {
         if(err) {
           res.status(500);
           return exceptions(res,err)
+        }
+
+        if(validate(product.pictures,'length')){
+          //
+          product.pictures=product.pictures.filter((elm) => {
+            let boo =elm.filename !== files.name;
+            //deleta elemento duplicado
+            if(!boo){
+              deletarImagem(gridfs,{_id:elm.picture_id})
+            }
+            return boo;
+          })
         }
 
         //adiciona dados da imagem no produto
@@ -66,6 +106,7 @@ const setup = (router) => {
             src:path
           }
         );
+
         //salva
         product.save((err, result) =>{
           if(err) {
@@ -76,7 +117,7 @@ const setup = (router) => {
             {
               msg:MSG.SUCCESS.UPDATED,
               id:data.id,
-              src:path
+              src:req.headers.origin+path
             }
           )
         })
@@ -115,6 +156,45 @@ const setup = (router) => {
       //envia stream para usuario
       readstream.pipe(res);
     })
+  })
+
+  //deleta imagem
+  router.delete('/products/picture/:id',(req,res,nxt) => {
+    let query ={_id:req.params.id}
+    deletarImagem(gfs(),query,
+      //sucesso
+      () => {
+        // deleta remove referencia
+        Product.findOne({"pictures.picture_id":{$in:query._id}}, (err, product) => {
+          if(err) {
+            res.status(500);
+            return exceptions(res,err)
+          }
+
+          // valida pictures
+          if(!validate(product.pictures,'length')){
+            return res.status(204).json({msg:[MSG.SUCCESS.DELETED,MSG.SUCCESS.NOT_FOUND]})
+          }
+
+          //limpa foto deletada
+          product.pictures=product.pictures.filter((elm) => elm.picture_id !== query._id )
+
+          //salva
+          product.save((err, result) =>{
+            if(err) {
+              res.status(500);
+              return exceptions(res,err)
+            }
+            return res.status(200).json({msg:MSG.SUCCESS.UPDATED})
+          })
+        })
+
+        // res.status(200).json({msg:MSG.SUCCESS.DELETED});
+      },
+      () => {
+        res.status(400).json({msg:MSG.ERROR.ON_DELETE});
+      }
+    )
   })
 
   // cadastra item
@@ -183,7 +263,6 @@ const setup = (router) => {
       res.json(result)
     })
   })
-
 
   // editar item com id
   router.put('/products/:id',(req,res,nxt) => {

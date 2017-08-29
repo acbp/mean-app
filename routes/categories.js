@@ -1,11 +1,40 @@
 //Schema/modelo de categoria
 const Category = require('../models/category');
+const Product = require('../models/product');
 const {hasOwnProperty, hasOwnPropertyArr, validate, validateArr } = require('../util/methods');
 const exceptions = require('../util/methods').exceptions.bind({},'categories');
 const MSG = require('../util/strings').MSG;
 const multiparty = require('connect-multiparty')();
 const gfs = require('../util/connection').gfs;
 const fs = require('fs');
+
+// deleta imagem do banco
+const deletarImagem =(gridfs,query,success,error) => {
+  gridfs.exist(query, (err, found)=>{
+    if(err) {
+      console.error(MSG.ERROR.ON_DELETE);
+      return error && error(err);
+    }
+
+    // msg de não encontrado
+    if(!found){
+      console.error(MSG.ERROR.NOT_FOUND);
+      return error && error(err);
+    }
+
+    gridfs.remove(query, (err)=>{
+
+      if(err) {
+        console.error(MSG.ERROR.ON_DELETE);
+        return error && error(err);
+      }
+      console.log(MSG.SUCCESS.DELETED);
+      if(success){
+        success();
+      }
+    });
+  });
+}
 
 //configura rotas dos métodos de categoria
 const setup = (router) => {
@@ -42,10 +71,9 @@ const setup = (router) => {
     })
   })
 
-
   // recebe imagem do categoria.
   router.post('/categories/picture/:id',multiparty,(req,res,nxt) => {
-    let data=req.params, files = req.files.image;
+    let data=req.params, files = req.files.image,gridfs=gfs();
 
     // se maior q 3.8 MiB impede upload.
     if(files.size > 32735232  ){
@@ -53,7 +81,7 @@ const setup = (router) => {
     }
 
     //cria fluxo de escrita
-    let writestream = gfs().createWriteStream({
+    let writestream = gridfs.createWriteStream({
      filename: files.name,
      mode: 'w',
      content_type: files.type,
@@ -65,7 +93,8 @@ const setup = (router) => {
 
     // ao terminar de baixar aquivo salva em banco
     writestream.on('close', (file) => {
-      let path = `${req.headers.origin}/api/categories/picture/${file._id}`;
+      //constroi endereço da imagem
+      let path = `/api/categories/picture/${file._id}`;
 
       //acha o categoria que será inserido a imagem
       Category.findById(data.id, (err, category) => {
@@ -74,7 +103,9 @@ const setup = (router) => {
           return exceptions(res,err)
         }
 
-        //TODO - remover imagem anterior
+        if(category.pictures && category.pictures.picture_id){
+          deletarImagem(gridfs,{_id:category.pictures.picture_id})
+        }
 
         //adiciona dados da imagem no categoria
         category.pictures= {
@@ -133,6 +164,20 @@ const setup = (router) => {
       //envia stream para usuario
       readstream.pipe(res);
     })
+  })
+
+  //deleta imagem
+  router.delete('/categories/picture/:id',(req,res,nxt) => {
+    deletarImagem(gfs(),{_id:req.params.id},
+      //sucesso
+      () => {
+        //deleta referencia
+        res.status(200).json({msg:MSG.SUCCESS.DELETED});
+      },
+      () => {
+        res.status(400).json({msg:MSG.ERROR.ON_DELETE});
+      }
+    )
   })
 
   // pega item com id

@@ -17,7 +17,8 @@ const CategorySchema = Schema(
     pictures:{
         picture_id:String,
         filename:String,
-        format:String
+        format:String,
+        src:String
     }
   },
   {
