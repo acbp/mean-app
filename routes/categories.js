@@ -168,11 +168,30 @@ const setup = (router) => {
 
   //deleta imagem
   router.delete('/categories/picture/:id',(req,res,nxt) => {
-    deletarImagem(gfs(),{_id:req.params.id},
+    let query={_id:req.params.id};
+    deletarImagem(gfs(),query,
       //sucesso
       () => {
-        //deleta referencia
-        res.status(200).json({msg:MSG.SUCCESS.DELETED});
+        // deleta remove referencia
+        Category.findOne({"pictures.picture_id":query._id}, (err, category) => {
+          if(err) {
+            res.status(500);
+            return exceptions(res,err)
+          }
+
+          //limpa foto deletada
+          category.pictures=undefined;
+
+          //salva
+          category.save((err, result) =>{
+            if(err) {
+              res.status(500);
+              return exceptions(res,err)
+            }
+            return res.status(200).json({msg:`${MSG.SUCCESS.DELETED} e ${MSG.SUCCESS.UPDATED}`})
+          })
+        })
+
       },
       () => {
         res.status(400).json({msg:MSG.ERROR.ON_DELETE});
@@ -190,7 +209,7 @@ const setup = (router) => {
         return exceptions(res,err)
       }
       //caso id não exista
-      if(!result) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
+      if(!result) return res.status(404).json({msg:MSG.ERROR.NOT_FOUND,id:data.id})
       res.json(result)
     })
   })
@@ -253,11 +272,32 @@ const setup = (router) => {
       }
 
       //caso id não exista
-      if(!result) return res.status(204).end();
+      if(!result) return res.status(404).end();
 
-      //TODO - atualizar lista de categorias do categoria deletado
+      // deleta remove referencia de produto
+      Product.findOne({"categories":data.id}, (err, product) => {
+        if(err) {
+          res.status(500);
+          return exceptions(res,err)
+        }
 
-      res.status(200).json({msg:MSG.SUCCESS.DELETED,data:result})
+        // valida pictures
+        if(!validate(product.categories,'length')){
+          return res.status(204).json({msg:`${MSG.SUCCESS.DELETED} e ${MSG.SUCCESS.NOT_FOUND}`})
+        }
+
+        //limpa foto deletada
+        product.categories=product.categories.filter((elm) => ""+elm !== data.id )
+
+        //salva
+        product.save((err, result) =>{
+          if(err) {
+            res.status(500);
+            return exceptions(res,err)
+          }
+          return res.status(200).json({msg:`${MSG.SUCCESS.DELETED} e ${MSG.SUCCESS.UPDATED}`})
+        })
+      })
     })
   })
 }

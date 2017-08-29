@@ -144,6 +144,8 @@ const setup = (router) => {
         return exceptions(res,err)
       }
 
+      if(!product) return res.status(404).end();
+
       //inicia leitura de imagem do banco
       let readstream = gfs().createReadStream({
          _id: req.params.id
