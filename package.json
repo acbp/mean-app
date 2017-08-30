@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./node_modules/.bin/opn http://localhost:1337/ && node app.js",
     "test": "npm run wnode",
-    "wnode": "./node_modules/.bin/nodemon -i ./node_modules -d 1",
+    "wnode": "./node_modules/.bin/nodemon -i website -i ./node_modules -d 1",
     "try": "echo $npm_package_main"
   },
   "keywords": [
