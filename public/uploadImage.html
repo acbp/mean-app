@@ -5,7 +5,7 @@
     <title>E-Commerce simples</title>
   </head>
   <body>
-    <input type="file" id="file" name="file">
+    <input type="file" id="file" accept=".png, .jpeg, .gif, .bmp, .tif, .tiff|images/*" name="foto" alt="foto" multiple>
     <button onclick="submit()">Submit</button>
 
     <img id="uploaded" >
@@ -16,21 +16,26 @@
         var formData = new FormData();
         var imagefile = document.querySelector('#file');
 
-        formData.append("image", imagefile.files[0]);
 
-        axios.post('http://localhost:1337/api/categories/picture/59a47400511f272da60e176b', formData, {
+        for (var i = 0; i < imagefile.files.length; i++) {
+          formData = new FormData();
+          formData.append("image", imagefile.files[i]);
+
+          axios.post('http://localhost:1337/api/products/picture/59a6cdca2319e027435743cb', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
-        }).then((res) => {
-          console.info('SUCCESS',res);
+          }).then((res) => {
+            console.info('SUCCESS',res);
 
-          var image = document.body.querySelector("#uploaded")
-          image.src=res.data.src;
+            var image = document.body.querySelector("#uploaded")
+            image.src=res.data.src;
 
-        }).catch((err) => {
-          console.error(err);
-        })
+          }).catch((err) => {
+            console.error(err);
+          })
+        }
+        // formData.append("image", imagefile.files[0]);
       }
     </script>
   </body>

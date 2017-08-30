@@ -204,8 +204,6 @@ const setup = (router) => {
     let data = req.body;
     let newProduct = new Product( Product.factory(data) );
 
-    //TODO - validar categorias
-
     newProduct.save((err,result) => {
       if(err) {
         res.status(500);
@@ -270,11 +268,6 @@ const setup = (router) => {
   router.put('/products/:id',(req,res,nxt) => {
     let data = req.params, body = req.body;
 
-    // valida parametros
-    // if(validateArr(body,['name','description'])){
-    //   return res.status(400).json({msg:MSG.ERROR.INVALID_PARAMS});
-    // }
-
     let newProduct = new Product( Product.factory(data) );
     let dataUpdated={
         $set:body
@@ -310,8 +303,6 @@ const setup = (router) => {
 
       //caso id não exista
       if(!result) return res.status(204).end();
-
-      //TODO - atualizar lista de categorias do produto deletado
 
       res.status(200).json({msg:MSG.SUCCESS.DELETED,data:result})
     })
