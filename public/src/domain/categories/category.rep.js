@@ -18,6 +18,4 @@ const CategoryREP =function (url , http) {
     this.searchProductCategoryName = function (name,options) {
       return g(url+"categoriesByName/"+name,options)
     }
-    
-    return this;
 }

@@ -33,13 +33,7 @@ const CategoryBO = function ( API ) {
   /**
   * Realiza busca e aplica tratamentos em categorias.
   */
-  this.getAllCategories=function (sucesso,erro,cache) {
-    if(cache){
-      cache=JSON.parse(localStorage.getItem('getAllCategories'))
-      if(cache){
-        return success_getAllCategories(sucesso,cache,false)
-      }
-    }
+  this.getAllCategories=function (sucesso,erro) {
     API.getAllCategories()
     .then(
       success_getAllCategories.bind({},sucesso),
@@ -57,10 +51,7 @@ const CategoryBO = function ( API ) {
   /**
   * tratamento de sucesso de getAllCategories
   */
-  function success_getAllCategories(callback,response,cache) {
-    if(!cache){
-      localStorage.setItem('getAllCategories',JSON.stringify(response))
-    }
+  function success_getAllCategories(callback,response) {
     response = response.data;
     callback(response);
   }

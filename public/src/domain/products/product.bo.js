@@ -34,13 +34,7 @@ const ProductBO = function ( API) {
   /**
   * Realiza busca e aplica tratamentos em produtos .
   */
-  this.getAllProducts=function (sucesso,erro,cache) {
-    if(cache){
-      cache=JSON.parse(localStorage.getItem('getAllProducts'));
-      if(cache){
-        return success_getAllProducts(sucesso,cache,false)
-      }
-    }
+  this.getAllProducts=function (sucesso,erro) {
     API.getAllProducts()
     .then(
       success_getAllProducts.bind({},sucesso),
@@ -58,10 +52,7 @@ const ProductBO = function ( API) {
   /**
   * tratamento de sucesso de getAllProducts
   */
-  function success_getAllProducts(callback,response,cache) {
-    if(!cache){
-      localStorage.setItem('getAllProducts',JSON.stringify(response))
-    }
+  function success_getAllProducts(callback,response) {
     response = response.data.map(mapProduct);
     callback(response);
   }

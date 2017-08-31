@@ -1,5 +1,3 @@
-
-
 app.controller('productCtrl', productCtrl);
 
 productCtrl.$inject =[ '$scope','API','$http'];
@@ -15,8 +13,8 @@ function productCtrl($scope,API,$http) {
   /**
   * Pega todos os produtos
   */
-  $scope.getAllProducts=function (cache) {
-    productBO.getAllProducts(success_getProducts,error_getProducts,cache)
+  $scope.getAllProducts=function () {
+    productBO.getAllProducts(success_getProducts,error_getProducts)
   }
 
   /**
@@ -37,8 +35,8 @@ function productCtrl($scope,API,$http) {
   /**
   * Tratamento de erro para 'getAllCategories'.
   */
-  $scope.getAllCategories = function (cache) {
-    categoryBO.getAllCategories(success_getAllCategories,error_getAllCategories,cache)
+  $scope.getAllCategories = function () {
+    categoryBO.getAllCategories(success_getAllCategories,error_getAllCategories)
   }
 
   /**
@@ -95,8 +93,8 @@ function productCtrl($scope,API,$http) {
   }
 
   function init() {
-    $scope.getAllProducts(true);
-    $scope.getAllCategories(true);
+    $scope.getAllProducts();
+    $scope.getAllCategories();
   }
 
   init()

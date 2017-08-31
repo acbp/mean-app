@@ -10,8 +10,8 @@ function categoryCtrl($scope,API,$http) {
   /**
   * Pega todos os categorias
   */
-  $scope.getAllCategories=function (cache) {
-    bo.getAllCategories(success_getCategories,error_getCategories,cache)
+  $scope.getAllCategories=function () {
+    bo.getAllCategories(success_getCategories,error_getCategories)
   }
 
   /**
@@ -48,7 +48,7 @@ function categoryCtrl($scope,API,$http) {
   }
 
   function init() {
-    $scope.getAllCategories(true);
+    $scope.getAllCategories();
   }
 
   init()
