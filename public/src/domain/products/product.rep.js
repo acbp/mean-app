@@ -2,7 +2,7 @@ const ProductREP = function (url, http) {
   const g= http.get,
         u= http.put,
         p= http.post,
-        d= http.put
+        d= http.delete
         ;
 
   /**
@@ -17,5 +17,12 @@ const ProductREP = function (url, http) {
   */
   this.searchProductName = function (name,options) {
     return g(url+"productsByName/"+name,options)
+  }
+
+  /**
+  * Busca categoria por nome
+  */
+  this.searchProductCategoryName = function (name,options) {
+    return g(url+"productsByCategoryName/"+name,options)
   }
 }

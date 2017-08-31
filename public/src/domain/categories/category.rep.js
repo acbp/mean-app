@@ -2,7 +2,7 @@ const CategoryREP =function (url , http) {
   const g= http.get,
         u= http.put,
         p= http.post,
-        d= http.put
+        d= http.delete
         ;
 
     /**
@@ -15,7 +15,7 @@ const CategoryREP =function (url , http) {
     /**
     * Busca categoria por nome
     */
-    this.searchProductCategoryName = function (name,options) {
+    this.searchCategoryName = function (name,options) {
       return g(url+"categoriesByName/"+name,options)
     }
 }

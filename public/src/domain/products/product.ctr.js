@@ -75,7 +75,7 @@ function productCtrl($scope,API,$http) {
   }
 
   $scope.searchProductCategoryName = function () {
-    categoryBO.searchProductCategoryName($scope.filterCategory,success_searchProductCategoryName,error_searchProductCategoryName)
+    productBO.searchProductCategoryName($scope.filterCategory,success_searchProductCategoryName,error_searchProductCategoryName)
   }
 
   /**

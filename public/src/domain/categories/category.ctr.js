@@ -29,22 +29,22 @@ function categoryCtrl($scope,API,$http) {
     console.error('error_getCategories');
   }
 
-  $scope.searchProductCategoryName = function () {
-    bo.searchProductCategoryName($scope.filterCategory,success_searchProductCategoryName,error_searchProductCategoryName)
+  $scope.searchCategoryName = function () {
+    bo.searchCategoryName($scope.filterCategory,success_searchCategoryName,error_searchCategoryName)
   }
 
   /**
-  * Tratamento de sucesso para 'searchProductCategoryName'
+  * Tratamento de sucesso para 'searchCategoryName'
   */
-  function success_searchProductCategoryName(r) {
+  function success_searchCategoryName(r) {
     $scope.categories=r;
   }
 
   /**
-  * Tratamento de erro para 'searchProductCategoryName'
+  * Tratamento de erro para 'searchCategoryName'
   */
-  function error_searchProductCategoryName() {
-    console.log('error_searchProductCategoryName');
+  function error_searchCategoryName() {
+    console.log('error_searchCategoryName');
   }
 
   function init() {

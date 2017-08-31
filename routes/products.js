@@ -1,5 +1,6 @@
 //Schema/modelo de produtos
 const Product = require('../models/product');
+const Category = require('../models/category');
 const {hasOwnProperty, hasOwnPropertyArr, validate, validateArr } = require('../util/methods');
 const exceptions = require('../util/methods').exceptions.bind({},'products');
 const MSG = require('../util/strings').MSG;
@@ -243,8 +244,33 @@ const setup = (router) => {
     })
   })
 
+  // pega item por nome decategorias
+  router.get('/productsByCategoryName/:name',(req,res,nxt) => {
+    let data = req.params;
+
+    Category.find({name:{ "$regex": data.name, "$options": "i" }},(err,categories) => {
+      if(err) {
+        res.status(500);
+        return exceptions(res,err)
+      }
+      if(!categories) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.name})
+      console.log(categories);
+      // procura
+      Product.find({'categories':{$in:categories}},(err, products) => {
+        if(err) {
+          res.status(500);
+          return exceptions(res,err)
+        }
+        //caso id não exista
+        if(!products) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.name})
+        res.json(products)
+      })
+
+    })
+  })
+
   // pega item com categorias
-  router.get('/productsByCategory',(req,res,nxt) => {
+  router.get('/productsByCategoryId',(req,res,nxt) => {
     let data = req.query;
 
     //se não houver parametros

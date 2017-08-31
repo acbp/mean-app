@@ -1,6 +1,45 @@
 const ProductBO = function ( API) {
   const ref = this;
 
+  function serialize(obj) {
+    var str = [];
+    for(var p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    return str.join("&");
+  }
+
+  /**
+  * Realiza busca e aplica tratamentos.
+  */
+  this.searchProductCategoryName=function (name,sucesso,erro) {
+    if(!name){
+      return ref.getAllProducts(sucesso,erro);
+    }
+
+    API.searchProductCategoryName(name)
+    .then(
+      success_searchProductName.bind({},sucesso),
+      error_searchProductName.bind({},erro),
+    )
+  }
+
+  /**
+  * tratamento de erro de searchProductName
+  */
+  function error_searchProductName(callback,response) {
+    callback(response);
+  }
+
+  /**
+  * tratamento de sucesso de searchProductName
+  */
+  function success_searchProductName(callback,response) {
+    response = response.data;
+    callback(response);
+  }
+
   /**
   * Realiza busca e aplica tratamentos.
   */
