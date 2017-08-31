@@ -218,7 +218,7 @@ const setup = (router) => {
   router.get('/categoriesByName/:name',(req,res,nxt) => {
     let data = req.params;
 
-    Category.findOne({name:data.name},(err, result) => {
+    Category.find({name:{ "$regex": data.name, "$options": "i" }},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)

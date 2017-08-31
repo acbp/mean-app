@@ -232,7 +232,7 @@ const setup = (router) => {
   router.get('/productsByName/:name',(req,res,nxt) => {
     let data = req.params;
 
-    Product.findOne({name:data.name},(err, result) => {
+    Product.find({name:{ "$regex": data.name, "$options": "i" }},(err, result) => {
       if(err) {
         res.status(500);
         return exceptions(res,err)

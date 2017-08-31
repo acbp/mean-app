@@ -1,30 +1,28 @@
-
-
 <div ng-controller="productCtrl" class="container">
 
   <h1>Lista de produtos</h1>
 
-
-  <div class="input-group">
-    <input type="text" class="form-control" placeholder="Pesquise um produto pelo nome" >
+  <div class="input-group" ng-submit="searchProductName()">
+    <input ng-model="filterProduct"type="text" class="form-control" placeholder="Pesquise ou Filtre um produto pelo nome" >
     <span class="input-group-btn">
-      <button class="btn btn-secondary" type="button">Go!</button>
+      <input type="submit" ng-click="searchProductName()" class="btn btn-secondary" type="button" value="Buscar!">
     </span>
   </div>
 
-  <div class="input-group">
-    <input type="text" class="form-control" placeholder="Pesquise um produto pela categoria" >
+  <div class="input-group" ng-submit="searchProductCategoryName()">
+    <input ng-model="filterCategory" type="text" class="form-control" placeholder="Pesquise um produto pela categoria" >
     <span class="input-group-btn">
-      <button class="btn btn-secondary" type="button">Go!</button>
+      <button ng-click="searchProductCategoryName()" class="btn btn-secondary" type="button">Buscar!</button>
     </span>
   </div>
 
   <div class="card-deck">
-      <div class="card" ng-repeat="c in products">
+      <div class="card" ng-repeat="c in products | filter:{name:filterProduct}">
         <div class="card-body">
-          <img class="card-img-top" data-ng-src="{{c.pictures[0].src}}" src="{{c.pictures[0].src}}" alt="{{c.pictures[0].filename}}" ng-if="c.pictures[0]">
+          <img ng-if="c.pictures[0]" class="card-img-top" data-ng-src="{{c.pictures[0].src}}" src="{{c.pictures[0].src}}" alt="{{c.pictures[0].filename}}">
           <h4 class="card-title">{{c.name}}</h4>
           <p class="card-text">{{c.description}}</p>
+
         </div>
       </div>
   </div>
