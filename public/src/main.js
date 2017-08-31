@@ -13,5 +13,9 @@ app.config(function($routeProvider)
     .when("/category", {
       templateUrl : 'src/domain/categories/category.html'
     })
+    // 
+    // .when("/#myCarousel", {
+    //
+    // })
     .otherwise({redirectTo: '/'});
 });

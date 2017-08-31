@@ -6,6 +6,7 @@ const ProductBO = function ( API) {
 
 
   this.create=function (product ,toaster,sucesso,erro) {
+    
     var modal=ref.openModal(
       {
         templateUrl:'src/domain/products/modal.create.html',
@@ -161,6 +162,12 @@ const ProductBO = function ( API) {
   * Exibe produto
   */
   this.view=function (product ,s,e) {
+    var _categories =ref.cacheAllCategories.reduce(function (acc,e) {
+      if(product.categories.some(function (ee) {
+        return ee === e.id;
+      }) ) acc.push(e)
+      return acc;
+    },[] );
     var modal=ref.openModal(
       {
         templateUrl:'src/domain/products/modal.product.html',
@@ -170,11 +177,7 @@ const ProductBO = function ( API) {
             return product;
           },
           categories:function () {
-            return ref.cacheAllCategories.map(function (e) {
-              return product.categories.some(function (ee) {
-                return ee === e.id;
-              }) && e;
-            });
+            return _categories
           }
         }
       }

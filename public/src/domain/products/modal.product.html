@@ -26,7 +26,7 @@
 
   Descrição:<p>{{ product.description || "Sem descrição"}}</p>
   Categorias:
-  <div class="checkbox" ng-repeat="c in categories">
+  <div class="checkbox" ng-repeat="c in categories track by $index">
     <label>
       {{c.name}}
     </label>
