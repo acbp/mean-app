@@ -23,6 +23,9 @@
   border: 1px solid #adadad;
   padding: 10px;
 }
+h4.card-title{
+    text-transform: capitalize;
+}
 
 .input-group {
     margin-bottom: 10px;
