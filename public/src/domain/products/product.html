@@ -1,6 +1,9 @@
 <div ng-controller="productCtrl" class="container">
 
-  <h1>Lista de produtos</h1>
+  <h1>
+    Lista de produtos
+    <button type="button" name="addProduct" class="btn btn-success pull-right" title="adicionar produto">+</button>
+  </h1>
 
   <form class="input-group">
     <input ng-model="filterProduct"type="text" class="form-control" placeholder="Pesquise ou Filtre um produto pelo nome" >

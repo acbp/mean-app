@@ -1,6 +1,165 @@
 const CategoryBO = function ( API ) {
   const ref = this;
 
+  this.create=function (category ,toaster,sucesso,erro) {
+    var modal=ref.openModal(
+      {
+        templateUrl:'src/domain/categories/modal.create.html',
+        controller:'modalSaveCtrl',
+        resolve:{
+          config:function () {
+            return {
+              category:category,
+              edit:true,
+              title:'Editando categoria',
+
+              deletarImagem:function (_categories) {
+                ref.deleteImage(
+                  _categories.pictures.picture_id,
+                  function () {
+                    toaster.success("Imagem deletada")
+                    _categories.pictures={};
+                  }
+                )
+              },
+
+              salvar:function (_categories) {
+                ref.saveCategory(
+                  _categories,
+                  function (response) {
+                    _categories.id=response.data.id;
+                    toaster.success('Categoria salva')
+
+                    //ng-model não pegar input file
+                    _categories.pictures=document.querySelector("#imagefile");
+
+                    if(_categories.pictures)
+                    ref.saveImage(
+                      _categories,
+                      function (resp) {
+                        toaster.success('Imagem foi salva.')
+                        sucesso();
+                      },
+                      function functionName() {
+                        toaster.error('Imagem não foi salva.')
+                        erro();
+                      }
+                    );
+                  },
+                  erro
+                );
+              } //salvar
+            }; // resolve
+          }
+        }
+      }
+    )
+  }
+
+  /**
+  * Exibe produto
+  */
+  this.edit=function (category ,toaster,sucesso,erro) {
+    var modal=ref.openModal(
+      {
+        templateUrl:'src/domain/categories/modal.create.html',
+        controller:'modalSaveCtrl',
+        resolve:{
+          config:function () {
+            return {
+              category:category,
+              edit:true,
+              title:'Editando categoria',
+
+              deletarImagem:function (_categories) {
+                ref.deleteImage(
+                  _categories.pictures.picture_id,
+                  function () {
+                    toaster.success("Imagem deletada")
+                    _categories.pictures={};
+                  }
+                )
+              },
+
+              salvar:function (_categories) {
+                ref.updateCategory(
+                  _categories,
+                  function (response) {
+                    _categories.id=response.data.id;
+                    toaster.success('Categoria atualizada')
+
+                    //ng-model não pegar input file
+                    _categories.pictures=document.querySelector("#imagefile");
+
+                    if(_categories.pictures)
+                    ref.saveImage(
+                      _categories,
+                      sucesso,
+                      erro
+                    );
+                  },
+                  erro
+                );
+              } //salvar
+            }; // resolve
+          }
+        }
+      }
+    )
+  }
+
+  this.saveImage = function (category,sucesso,erro) {
+    var options={
+        headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+    var formData = new FormData();
+    formData.append("image", category.pictures.files[0]);
+    API.uploadImage(category.id,formData,options).then(sucesso,erro)
+  }
+
+  this.saveCategory=function (category,sucesso,erro) {
+    if(!category||!category.name ||!category.description ){
+      return erro();
+    }
+    API.saveCategory(category).then(sucesso,erro)
+  }
+  this.updateCategory=function (category,sucesso,erro) {
+    if(!category||!category.name ||!category.description ){
+      return erro();
+    }
+    API.updateCategory(category).then(sucesso,erro)
+  }
+
+  /**
+  * Deleta imagem de um categoria
+  */
+  this.deleteImage = function (id,sucesso,erro) {
+    if(!id){
+      return error_deleteImage(erro)
+    }
+    API.deleteImage(id)
+    .then(
+      success_deleteImage.bind({},sucesso),
+      error_deleteImage.bind({},erro),
+    )
+  }
+
+  /**
+  * Tratamento de sucesso para 'deleteImage'
+  */
+  function success_deleteImage(callback,response) {
+    callback(response)
+  }
+
+  /**
+  * Tratamento de error para 'deleteImage'
+  */
+  function error_deleteImage(callback,response) {
+    callback(response)
+  }
+
   /**
   * Exibe produto
   */

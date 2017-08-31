@@ -1,7 +1,9 @@
 
 <div ng-controller="categoryCtrl" class="container">
 
-    <h1>Lista de categorias</h1>
+    <h1>Lista de categorias
+       <button type="button" name="addCategory" class="btn btn-success pull-right" title="adicionar categoria">+</button>
+    </h1>
 
     <form class="input-group" >
       <input ng-model="filterCategory" type="text" class="form-control" placeholder="Pesquise ou filtre uma categoria" >

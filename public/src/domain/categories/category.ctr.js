@@ -18,7 +18,7 @@ function categoryCtrl($scope,API,$http,$uibModal,toaster) {
   * Edita categoria
   */
   $scope.edit = function ( product ) {
-    bo.edit( product,success_edit,error_edit )
+    bo.edit( product,toaster,success_edit,error_edit )
   }
 
   /**
