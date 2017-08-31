@@ -6,6 +6,7 @@
 }
 
 .card {
+  min-width: 180px;
   width: 30%;
   padding: 10px;
   display: inline-block;

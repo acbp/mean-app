@@ -240,7 +240,10 @@ const setup = (router) => {
 
     let newCategory = new Category( Category.factory(data) );
     let dataUpdated={
-      $set:body
+      $set:{
+        name:body.name,
+        description:body.description
+      }
     };
 
     //acha e atualiza

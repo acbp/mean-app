@@ -17,14 +17,18 @@
   </form>
 
   <div class="card-deck">
-      <div class="card" ng-repeat="c in products | filter:{name:filterProduct}">
-        <div class="card-body">
-          <img ng-if="c.pictures[0]" class="card-img-top" data-ng-src="{{c.pictures[0].src}}" src="{{c.pictures[0].src}}" alt="{{c.pictures[0].filename}}">
-          <h4 class="card-title">{{c.name}}</h4>
+      <div class="card" ng-repeat="p in products | filter:{name:filterProduct}">
+        <div class="card-body" >
+          <img ng-if="p.pictures[0]" class="card-img-top" data-ng-src="{{p.pictures[0].src}}" ng-src="{{p.pictures[0].src}}" alt="{{p.pictures[0].filename}}">
+          <h4 class="card-title">{{p.name}}</h4>
           <p class="card-text">{{c.description}}</p>
 
+          <div class="btn-group btn-group-xs" role="group">
+            <button type="button" class="btn btn-info" ng-click="viewProduct(p)">Ver</button>
+            <button type="button" class="btn btn-warning" ng-click="editProduct(p)">Editar</button>
+            <button type="button" class="btn btn-danger" ng-click="deleteProduct(p)">Deletar</button>
+          </div>
         </div>
       </div>
   </div>
-
 </div>

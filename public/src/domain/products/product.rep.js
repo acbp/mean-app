@@ -25,4 +25,18 @@ const ProductREP = function (url, http) {
   this.searchProductCategoryName = function (name,options) {
     return g(url+"productsByCategoryName/"+name,options)
   }
+
+  /**
+  * Atualiza produto
+  */
+  this.updateProduct =function ( product,options ) {
+    return u(url+"products/"+product.id, product, options)
+  }
+
+  /**
+  * Deleta produto
+  */
+  this.deleteProduct= function ( id, options) {
+    return d(url+'products/'+id)
+  }
 }

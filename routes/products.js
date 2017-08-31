@@ -254,7 +254,7 @@ const setup = (router) => {
         return exceptions(res,err)
       }
       if(!categories) return res.status(204).json({msg:MSG.ERROR.NOT_FOUND,id:data.name})
-      console.log(categories);
+
       // procura
       Product.find({'categories':{$in:categories}},(err, products) => {
         if(err) {
@@ -292,16 +292,20 @@ const setup = (router) => {
 
   // editar item com id
   router.put('/products/:id',(req,res,nxt) => {
-    let data = req.params, body = req.body;
+    let query = req.params, body = req.body;
 
-    let newProduct = new Product( Product.factory(data) );
+    let newProduct = new Product( Product.factory(query) );
     let dataUpdated={
-        $set:body
+        $set:{
+          name:body.name,
+          description:body.description,
+          categories:body.categories
+        }
       };
 
     //acha e atualiza
     Product.findByIdAndUpdate(
-      data.id,
+      query.id,
       dataUpdated,
       (err,result) => {
           if(err) {

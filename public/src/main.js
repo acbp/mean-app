@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute','ui.bootstrap','toaster', 'ngAnimate']);
 
 app.constant('API',location.origin+'/api/')
 
@@ -7,11 +7,11 @@ app.config(function($routeProvider)
 {
    $routeProvider
     .when("/", {
-      templateUrl : 'src/view/product.html'
+      templateUrl : 'src/domain/products/product.html'
     })
 
     .when("/category", {
-      templateUrl : 'src/view/category.html'
+      templateUrl : 'src/domain/categories/category.html'
     })
     .otherwise({redirectTo: '/'});
 });

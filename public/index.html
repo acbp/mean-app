@@ -9,22 +9,26 @@
     <link rel="stylesheet" href="src/style/style.css">
   </head>
   <body ng-app="app">
-
+    <toaster-container></toaster-container>
     <div id="app">
 
       <ul class="nav nav-tabs">
          <li ng-class="{active: activetab == '/'}"><a href="#!/">Produtos</a></li>
          <li ng-class="{active: activetab == '/category'}"><a href="#!/category">Categorias</a></li>
       </ul>
-
       <div ng-view></div>
     </div>
 
 
     <script src="bower_components/angular/angular.min.js" charset="utf-8"></script>
     <script src="bower_components/angular-route/angular-route.min.js" charset="utf-8"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js" charset="utf-8"></script>
     <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="bower_components/AngularJS-Toaster/toaster.min.css">
+    <script src="bower_components/AngularJS-Toaster/toaster.min.js" charset="utf-8"></script>
+
+    <script src="vendor/ui-bootstrap-tpls-2.5.0.min.js" charset="utf-8"></script>
 
     <script src="src/main.js" charset="utf-8"></script>
 
@@ -37,6 +41,8 @@
     <script src="src/domain/categories/category.bo.js" charset="utf-8"></script>
 
     <!-- Controller -->
+    <script src="src/domain/common/modal.delete.ctr.js" charset="utf-8"></script>
+    <script src="src/domain/products/modal.ctr.js" charset="utf-8"></script>
     <script src="src/domain/products/product.ctr.js" charset="utf-8"></script>
     <script src="src/domain/categories/category.ctr.js" charset="utf-8"></script>
   </body>

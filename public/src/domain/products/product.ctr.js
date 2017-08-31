@@ -1,14 +1,65 @@
 app.controller('productCtrl', productCtrl);
 
-productCtrl.$inject =[ '$scope','API','$http'];
+productCtrl.$inject =[ '$scope','API','$http','$uibModal','toaster'];
 
-function productCtrl($scope,API,$http) {
+function productCtrl($scope,API,$http,$uibModal,toaster) {
   const productBO = new ProductBO( new ProductREP(API,$http) );
   const categoryBO = new CategoryBO( new CategoryREP(API,$http) );
 
   var cacheAllProducts; // guarda ultima lista de produtos
   var cacheAllCategories; // guarda ultima lista de categorias
   $scope.products;
+
+  /**
+  * Exibe produto em modal
+  */
+  $scope.viewProduct = function ( product ) {
+    productBO.viewProduct( product )
+  }
+
+  /**
+  * Edita produto
+  */
+  $scope.editProduct = function ( product ) {
+    productBO.editProduct( product ,$scope.alerts.push  ,$scope.alerts.push )
+  }
+
+  /**
+  * Tratamento de sucesso para 'deleteProduct'
+  */
+  function success_deleteProduct() {
+    product.getAllProducts();
+    toaster.success('Item editado','Atualizando lista.')
+  }
+
+  /**
+  * Tratamento de erro para 'deleteProduct'
+  */
+  function error_deleteProduct() {
+    toaster.success('Ocorreu um erro','Não foi possível editar.');
+  }
+
+
+  /**
+  * Deletar após confirmação de modal
+  */
+  $scope.deleteProduct = function ( product ) {
+    productBO.deleteProduct( product  , success_deleteProduct, error_deleteProduct )
+  }
+
+  /**
+  * Tratamento de sucesso para 'deleteProduct'
+  */
+  function success_deleteProduct() {
+    toaster.success('Item deletado')
+  }
+
+  /**
+  * Tratamento de erro para 'deleteProduct'
+  */
+  function error_deleteProduct() {
+    toaster.success('Ocorreu um erro','Não foi possível deletar');
+  }
 
   /**
   * Pega todos os produtos
@@ -43,7 +94,7 @@ function productCtrl($scope,API,$http) {
   * Tratamento de erro para 'getAllCategories'.
   */
   function success_getAllCategories(r) {
-    cacheAllCategories=r;
+    productBO.cacheAllProducts=cacheAllCategories=r;
   }
 
   /**
@@ -95,6 +146,8 @@ function productCtrl($scope,API,$http) {
   function init() {
     $scope.getAllProducts();
     $scope.getAllCategories();
+
+    productBO.openModal = $uibModal.open
   }
 
   init()

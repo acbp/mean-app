@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">{{product.name}}</h3>
+</div>
+<div class="modal-body" id="modal-body">
+  <div style="height: 305px">
+
+    <div uib-carousel interval="1000" >
+      <div uib-slide ng-repeat="pic in product.pictures" >
+        <img ng-src="{{pic.src}}" alt="{{pic.filename}}" style="margin:auto;">
+      </div>
+    </div>
+  </div>
+
+  Descrição:<p>{{ product.description }}</p>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-info" type="button" ng-click="fechar()">Fechar</button>
+</div>

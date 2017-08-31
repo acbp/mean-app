@@ -1,13 +1,70 @@
 const ProductBO = function ( API) {
   const ref = this;
+  var cacheAllProducts; // guarda ultima lista de produtos
+  var cacheAllCategories; // guarda ultima lista de categorias
+  this.openModal;
 
-  function serialize(obj) {
-    var str = [];
-    for(var p in obj)
-      if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+  /**
+  * Exibe produto
+  */
+  this.deleteProduct=function (product) {
+    var modalInstance = ref.openModal(
+      {
+        templateUrl:'src/domain/common/modal.delete.html',
+        controller:'modalDeleteCtrl',
+        size:"sm"
       }
-    return str.join("&");
+    )
+
+    modalInstance.result.then( ref.delProduct.bind({},product.id));
+  }
+
+  /**
+  * Exibe produto
+  */
+  this.viewProduct=function (product ,s,e) {
+    var modal=ref.openModal(
+      {
+        ariaLabelledBy:"Produto",
+        ariaDescribedBy:"Janela com descrição de produto.",
+        templateUrl:'src/domain/products/modal.product.html',
+        controller:'modalProductCtrl',
+        resolve:{
+          product:function () {
+            return product;
+          }
+        }
+      }
+    )
+
+    modal.result.then(s,e);
+  }
+
+  /**
+  * Deleta um produto por id
+  */
+  this.delProduct = function (id,sucesso,erro) {
+    if(!id){
+      return error_delProduct();
+    }
+    API.deleteProduct(id).then(
+      success_delProduct.bind({},sucesso),
+      error_delProduct.bind({},erro),
+    )
+  }
+
+  /**
+  * Tratamento de erro para 'delProduct'
+  */
+  function error_delProduct(callback,response) {
+    callback(response)
+  }
+
+  /**
+  * Tratamento de sucesso para 'delProduct'
+  */
+  function success_delProduct(callback,response) {
+    callback(response)
   }
 
   /**
@@ -92,7 +149,7 @@ const ProductBO = function ( API) {
   * tratamento de sucesso de getAllProducts
   */
   function success_getAllProducts(callback,response) {
-    response = response.data.map(mapProduct);
+    response = cacheAllProducts= response.data.map(mapProduct);
     callback(response);
   }
 
