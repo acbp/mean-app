@@ -11,17 +11,7 @@ const CategoryBO = function ( API ) {
             return {
               category:category,
               edit:true,
-              title:'Editando categoria',
-
-              deletarImagem:function (_categories) {
-                ref.deleteImage(
-                  _categories.pictures.picture_id,
-                  function () {
-                    toaster.success("Imagem deletada")
-                    _categories.pictures={};
-                  }
-                )
-              },
+              title:'Criando categoria',
 
               salvar:function (_categories) {
                 ref.saveCategory(

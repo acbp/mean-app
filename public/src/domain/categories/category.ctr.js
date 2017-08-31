@@ -8,6 +8,24 @@ function categoryCtrl($scope,API,$http,$uibModal,toaster) {
   $scope.categories;
 
   /**
+  * Cria categoria em modal
+  */
+  $scope.create = function ( product ) {
+    bo.create( product, toaster, success_create, error_create )
+  }
+
+  function success_create() {
+    $scope.getAllCategories();
+    toaster.success("Criado categoria")
+  }
+  /**
+  * Tratamento de erro para 'create'
+  */
+  function error_create() {
+    toaster.error("Erro ao criado categoria")
+  }
+
+  /**
   * Exibe categoria em modal
   */
   $scope.view = function ( product ) {
@@ -48,7 +66,7 @@ function categoryCtrl($scope,API,$http,$uibModal,toaster) {
   * Tratamento de sucesso para 'delete'
   */
   function success_delete() {
-    $scope.getAllProducts()
+    $scope.getAllCategories();
     toaster.success('Item deletado')
   }
 
