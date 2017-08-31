@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body" id="modal-body">
+  <div>
+    <label for="nameCategory">Nome</label>
+    <input ng-model="category.name" type="text" class="form-control" id="nameCategory" aria-describedby="nameCategory">
+  </div>
+  <div>
+    <label for="descriptionCategory">Descrição</label>
+    <input ng-model="category.description" type="text" class="form-control" id="descriptionCategory" aria-describedby="descriptionCategory">
+  </div>
+
+  <div  >
+    <label for="descriptionCategory">Imagem</label>
+
+    <input ng-model="pictures" id="imagefile" type="file" name="fileCategory" value="{{category.pictures.filename}}" accept="image/jpeg|image/tiff|image/gif|image/x-png|image/x-MS-bmp">
+
+    <button class="btn btn-default " type="button" ng-click="deletarImagem(category)" ng-if="category.pictures">remover</button>
+  </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" type="button" ng-click="salvar(category)">Salvar</button>
+    <button class="btn btn-warning" type="button" ng-click="fechar()">Fechar</button>
+</div>
