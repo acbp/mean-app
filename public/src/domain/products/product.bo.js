@@ -7,6 +7,23 @@ const ProductBO = function ( API) {
   /**
   * Exibe produto
   */
+  this.viewProduct=function (product ,s,e) {
+    var modal=ref.openModal(
+      {
+        templateUrl:'src/domain/products/modal.product.html',
+        controller:'modalProductCtrl',
+        resolve:{
+          product:function () {
+            return product;
+          }
+        }
+      }
+    )
+  }
+
+  /**
+  * Exibe produto
+  */
   this.deleteProduct=function (product) {
     var modalInstance = ref.openModal(
       {
@@ -20,32 +37,11 @@ const ProductBO = function ( API) {
   }
 
   /**
-  * Exibe produto
-  */
-  this.viewProduct=function (product ,s,e) {
-    var modal=ref.openModal(
-      {
-        ariaLabelledBy:"Produto",
-        ariaDescribedBy:"Janela com descrição de produto.",
-        templateUrl:'src/domain/products/modal.product.html',
-        controller:'modalProductCtrl',
-        resolve:{
-          product:function () {
-            return product;
-          }
-        }
-      }
-    )
-
-    modal.result.then(s,e);
-  }
-
-  /**
   * Deleta um produto por id
   */
   this.delProduct = function (id,sucesso,erro) {
     if(!id){
-      return error_delProduct();
+      return error_delProduct(erro);
     }
     API.deleteProduct(id).then(
       success_delProduct.bind({},sucesso),

@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  Descrição:<p>{{ product.description }}</p>
+  Descrição:<p>{{ product.description || "Sem descrição"}}</p>
 </div>
 <div class="modal-footer">
     <button class="btn btn-info" type="button" ng-click="fechar()">Fechar</button>

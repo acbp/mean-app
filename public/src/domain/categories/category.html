@@ -13,9 +13,15 @@
     <div class="card-deck">
       <div class="card" ng-repeat="c in categories | filter:{name:filterCategory}">
         <div class="card-body">
-          <img ng-if="c.pictures && c.pictures.src" class="card-img-top" data-ng-src="{{c.pictures.src}}" src="{{c.pictures.src}}" alt="{{c.pictures.filename}}">
+          <img ng-if="c.pictures && c.pictures.src" class="card-img-top" data-ng-src="{{c.pictures.src}}" ng-src="{{c.pictures.src}}" alt="{{c.pictures.filename}}">
           <h4 class="card-title">{{c.name}}</h4>
           <p class="card-text">{{c.description}}</p>
+
+          <div class="btn-group btn-group-xs" role="group">
+            <button type="button" class="btn btn-info" ng-click="view(c)">Ver</button>
+            <button type="button" class="btn btn-warning" ng-click="edit(c)">Editar</button>
+            <button type="button" class="btn btn-danger" ng-click="delete(c)">Deletar</button>
+          </div>
         </div>
       </div>
     </div>

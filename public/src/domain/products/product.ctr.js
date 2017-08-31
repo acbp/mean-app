@@ -6,8 +6,6 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   const productBO = new ProductBO( new ProductREP(API,$http) );
   const categoryBO = new CategoryBO( new CategoryREP(API,$http) );
 
-  var cacheAllProducts; // guarda ultima lista de produtos
-  var cacheAllCategories; // guarda ultima lista de categorias
   $scope.products;
 
   /**
@@ -21,22 +19,22 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   * Edita produto
   */
   $scope.editProduct = function ( product ) {
-    productBO.editProduct( product ,$scope.alerts.push  ,$scope.alerts.push )
+    productBO.editProduct( product )
   }
 
   /**
-  * Tratamento de sucesso para 'deleteProduct'
+  * Tratamento de sucesso para 'editProduct'
   */
-  function success_deleteProduct() {
-    product.getAllProducts();
+  function success_editProduct() {
+    $scope.getAllProducts();
     toaster.success('Item editado','Atualizando lista.')
   }
 
   /**
-  * Tratamento de erro para 'deleteProduct'
+  * Tratamento de erro para 'editProduct'
   */
-  function error_deleteProduct() {
-    toaster.success('Ocorreu um erro','Não foi possível editar.');
+  function error_editProduct() {
+    toaster.error('Ocorreu um erro','Não foi possível editar.');
   }
 
 
@@ -51,6 +49,7 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   * Tratamento de sucesso para 'deleteProduct'
   */
   function success_deleteProduct() {
+    $scope.getAllProducts()
     toaster.success('Item deletado')
   }
 
@@ -58,7 +57,7 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   * Tratamento de erro para 'deleteProduct'
   */
   function error_deleteProduct() {
-    toaster.success('Ocorreu um erro','Não foi possível deletar');
+    toaster.error('Ocorreu um erro','Não foi possível deletar');
   }
 
   /**
@@ -72,7 +71,7 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   * Tratamento de sucesso para 'getAllProducts'.
   */
   function success_getProducts(r) {
-    $scope.products=cacheAllProducts=r;
+    $scope.products=r;
   }
 
   /**
@@ -94,7 +93,7 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   * Tratamento de erro para 'getAllCategories'.
   */
   function success_getAllCategories(r) {
-    productBO.cacheAllProducts=cacheAllCategories=r;
+    productBO.cacheAllProducts=r;
   }
 
   /**

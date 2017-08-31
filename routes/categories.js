@@ -283,9 +283,9 @@ const setup = (router) => {
           res.status(500);
           return exceptions(res,err)
         }
-
+        console.log(product);
         // valida pictures
-        if(!validate(product.categories,'length')){
+        if(!product || !validate(product.categories,'length')){
           return res.status(204).json({msg:`${MSG.SUCCESS.DELETED} e ${MSG.SUCCESS.NOT_FOUND}`})
         }
 

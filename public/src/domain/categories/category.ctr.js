@@ -1,11 +1,63 @@
 app.controller('categoryCtrl', categoryCtrl);
 
-categoryCtrl.$inject =[ '$scope','API','$http'];
+categoryCtrl.$inject =[ '$scope','API','$http','$uibModal','toaster'];
 
-function categoryCtrl($scope,API,$http) {
+function categoryCtrl($scope,API,$http,$uibModal,toaster) {
   const bo = new CategoryBO( new CategoryREP(API,$http) );
-  var cacheAllCategories; // guarda ultima lista de categorias
+
   $scope.categories;
+
+  /**
+  * Exibe categoria em modal
+  */
+  $scope.view = function ( product ) {
+    bo.view( product )
+  }
+
+  /**
+  * Edita categoria
+  */
+  $scope.edit = function ( product ) {
+    bo.edit( product,success_edit,error_edit )
+  }
+
+  /**
+  * Tratamento de sucesso para 'edit'
+  */
+  function success_edit() {
+    $scope.getAllCategories();
+    toaster.success('Item editado','Atualizando lista.')
+  }
+
+  /**
+  * Tratamento de erro para 'edit'
+  */
+  function error_edit() {
+    toaster.error('Ocorreu um erro','Não foi possível editar.');
+  }
+
+
+  /**
+  * Deletar após confirmação de modal
+  */
+  $scope.delete = function ( category ) {
+    bo.delete( category , success_delete, error_delete )
+  }
+
+  /**
+  * Tratamento de sucesso para 'delete'
+  */
+  function success_delete() {
+    $scope.getAllProducts()
+    toaster.success('Item deletado')
+  }
+
+  /**
+  * Tratamento de erro para 'delete'
+  */
+  function error_delete() {
+    toaster.error('Ocorreu um erro','Não foi possível deletar');
+  }
 
   /**
   * Pega todos os categorias
@@ -18,7 +70,7 @@ function categoryCtrl($scope,API,$http) {
   * Tratamento de sucesso para 'getAllCategories'.
   */
   function success_getCategories(r) {
-    $scope.categories=cacheAllCategories=r;
+    $scope.categories=r;
   }
 
   /**
@@ -49,6 +101,7 @@ function categoryCtrl($scope,API,$http) {
 
   function init() {
     $scope.getAllCategories();
+    bo.openModal = $uibModal.open;
   }
 
   init()

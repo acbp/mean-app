@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">{{category.name}}</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div style="height: 305px">
+    <img ng-src="{{category.pictures.src}}" alt="{{category.pictures.filename}}" style="max-height:300px">
+  </div>
+
+  Descrição:<p>{{ category.description || "Sem descrição"}}</p>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-info" type="button" ng-click="fechar()">Fechar</button>
+</div>

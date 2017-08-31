@@ -1,5 +1,65 @@
 const CategoryBO = function ( API ) {
   const ref = this;
+
+  /**
+  * Exibe produto
+  */
+  this.view=function (category ,s,e) {
+    var modal=ref.openModal(
+      {
+        templateUrl:'src/domain/categories/modal.category.html',
+        controller:'modalCategoryCtrl',
+        resolve:{
+          category:function () {
+            return category;
+          }
+        }
+      }
+    )
+  }
+
+  /**
+  * Exibe produto
+  */
+  this.delete=function (category,sucesso,erro) {
+    var modalInstance = ref.openModal(
+      {
+        templateUrl:'src/domain/common/modal.delete.html',
+        controller:'modalDeleteCtrl',
+        size:"sm"
+      }
+    )
+
+    modalInstance.result.then( ref.del.bind({},category.id,sucesso,erro) );
+  }
+
+  /**
+  * Deleta um produto por id
+  */
+  this.del = function (id,sucesso,erro) {
+    if(!id){
+      return error_del(erro);
+    }
+    API.deleteCategory(id).then(
+      success_del.bind({},sucesso),
+      error_del.bind({},erro),
+    )
+  }
+
+  /**
+  * Tratamento de erro para 'del'
+  */
+  function error_del(callback,response) {
+    callback(response)
+  }
+
+  /**
+  * Tratamento de sucesso para 'del'
+  */
+  function success_del(callback,response) {
+    callback(response)
+  }
+
   /**
   * Realiza busca e aplica tratamentos.
   */
@@ -52,8 +112,17 @@ const CategoryBO = function ( API ) {
   * tratamento de sucesso de getAllCategories
   */
   function success_getAllCategories(callback,response) {
-    response = response.data;
+    response = response.data.map(mapCategories);
     callback(response);
+  }
+
+  function mapCategories(e) {
+    return{
+      id:e._id,
+      name:e.name,
+      description:e.description,
+      pictures:e.pictures
+    }
   }
 
 }
