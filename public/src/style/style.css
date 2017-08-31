@@ -1,0 +1,20 @@
+.card-deck {
+  width: 100%;
+}
+
+.card {
+  width: 30%;
+  padding: 10px;
+  display: inline-block;
+}
+.card-img-top {
+    width: 100%;
+}
+.card-body{
+  border: 1px solid #adadad;
+  padding: 10px;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}

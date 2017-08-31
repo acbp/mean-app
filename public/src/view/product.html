@@ -1,0 +1,32 @@
+
+
+<div ng-controller="productCtrl" class="container">
+
+  <h1>Lista de produtos</h1>
+
+
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Pesquise um produto pelo nome" >
+    <span class="input-group-btn">
+      <button class="btn btn-secondary" type="button">Go!</button>
+    </span>
+  </div>
+
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Pesquise um produto pela categoria" >
+    <span class="input-group-btn">
+      <button class="btn btn-secondary" type="button">Go!</button>
+    </span>
+  </div>
+
+  <div class="card-deck">
+      <div class="card" ng-repeat="c in products">
+        <div class="card-body">
+          <img class="card-img-top" data-ng-src="{{c.pictures[0].src}}" src="{{c.pictures[0].src}}" alt="{{c.pictures[0].filename}}" ng-if="c.pictures[0]">
+          <h4 class="card-title">{{c.name}}</h4>
+          <p class="card-text">{{c.description}}</p>
+        </div>
+      </div>
+  </div>
+
+</div>

@@ -3,10 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title>website</title>
-    <link rel="stylesheet" href="/static/boostr">
+    <!-- <link rel="stylesheet" href="/static/boostr"> -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="src/style/style.css">
   </head>
-  <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
+  <body ng-app="app">
+
+    <div id="app">
+
+      <ul class="nav nav-tabs">
+         <li ng-class="{active: activetab == '/'}"><a href="#!/">Produtos</a></li>
+         <li ng-class="{active: activetab == '/category'}"><a href="#!/category">Categorias</a></li>
+      </ul>
+
+      <div ng-view></div>
+    </div>
+
+
+    <script src="bower_components/angular/angular.min.js" charset="utf-8"></script>
+    <script src="bower_components/angular-route/angular-route.min.js" charset="utf-8"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+
+    <script src="src/main.js" charset="utf-8"></script>
+    <script src="src/controllers/product.js" charset="utf-8"></script>
+    <script src="src/controllers/category.js" charset="utf-8"></script>
   </body>
 </html>

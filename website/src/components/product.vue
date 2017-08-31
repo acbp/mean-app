@@ -39,7 +39,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
               <span aria-hidden="true">&times;</span>
             </button>
-
+ngle Page, utilizando ngView e ngRoute.
           </div>
 
           <div class="modal-body" >
