@@ -1,36 +1,5 @@
-const ProductBO = function ( API ) {
+const ProductBO = function ( API) {
   const ref = this;
-  const NO_CONTENT="Não há conteúdo"
-
-  /**
-  * Realiza busca e aplica tratamentos.
-  */
-  this.searchProductCategoryName = function (name,sucesso,erro) {
-    if(!name){
-      return ref.getAllCategories(sucesso,erro);
-    }
-
-    API.searchProductCategoryName(name)
-    .then(
-      success_searchProductCategoryName.bind({},sucesso),
-      error_searchProductCategoryName.bind({},erro),
-    )
-  }
-
-  /**
-  * tratamento de erro de searchProductCategoryName
-  */
-  function error_searchProductCategoryName(callback,response) {
-    callback(response);
-  }
-
-  /**
-  * tratamento de sucesso de searchProductCategoryName
-  */
-  function success_searchProductCategoryName(callback,response) {
-    response = response.data;
-    callback(response);
-  }
 
   /**
   * Realiza busca e aplica tratamentos.
@@ -63,41 +32,14 @@ const ProductBO = function ( API ) {
   }
 
   /**
-  * Realiza busca e aplica tratamentos em categorias.
-  */
-  this.getAllCategories=function (sucesso,erro,cache) {
-    if(cache){
-      return success_getAllCategories(sucesso,JSON.parse(localStorage.getItem('getAllCategories')))
-    }
-    API.getAllCategories()
-    .then(
-      success_getCategories.bind({},sucesso),
-      error_getCategories.bind({},erro),
-    )
-  }
-
-  /**
-  * tratamento de erro de getAllCategories
-  */
-  function error_getCategories(callback,response) {
-    callback(response);
-  }
-
-  /**
-  * tratamento de sucesso de getAllCategories
-  */
-  function success_getCategories(callback,response) {
-    response = response.data;
-    localStorage.setItem('getAllCategories',JSON.stringify(response))
-    callback(response);
-  }
-
-  /**
   * Realiza busca e aplica tratamentos em produtos .
   */
   this.getAllProducts=function (sucesso,erro,cache) {
     if(cache){
-      return success_getAllProducts(sucesso,JSON.parse(localStorage.getItem('getAllProducts')))
+      cache=JSON.parse(localStorage.getItem('getAllProducts'));
+      if(cache){
+        return success_getAllProducts(sucesso,cache,false)
+      }
     }
     API.getAllProducts()
     .then(
@@ -116,9 +58,11 @@ const ProductBO = function ( API ) {
   /**
   * tratamento de sucesso de getAllProducts
   */
-  function success_getAllProducts(callback,response) {
+  function success_getAllProducts(callback,response,cache) {
+    if(!cache){
+      localStorage.setItem('getAllProducts',JSON.stringify(response))
+    }
     response = response.data.map(mapProduct);
-    localStorage.setItem('getAllProducts',JSON.stringify(response))
     callback(response);
   }
 
@@ -138,5 +82,4 @@ const ProductBO = function ( API ) {
       })
     }
   }
-
 };

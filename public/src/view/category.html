@@ -3,21 +3,20 @@
 
     <h1>Lista de categorias</h1>
 
-    <div class="input-group">
-      <input type="text" class="form-control" placeholder="Pesquise uma categoria" >
+    <form class="input-group" >
+      <input ng-model="filterCategory" type="text" class="form-control" placeholder="Pesquise ou filtre uma categoria" >
       <span class="input-group-btn">
-        <button class="btn btn-secondary" type="button">Go!</button>
+        <input type="submit" ng-click="searchCategoryName()" class="btn btn-secondary" type="button" value="Buscar!"/>
       </span>
-    </div>
+    </form>
 
     <div class="card-deck">
-        <div class="card">
-          <img class="card-img-top" src="http://www.pawderosa.com/images/puppies.jpg" alt="Card image cap">
-          <div class="card-body">
-            <h4 class="card-title">Card title</h4>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
+      <div class="card" ng-repeat="c in categories | filter:{name:filterCategory}">
+        <div class="card-body">
+          <img ng-if="c.pictures && c.pictures.src" class="card-img-top" data-ng-src="{{c.pictures.src}}" src="{{c.pictures.src}}" alt="{{c.pictures.filename}}">
+          <h4 class="card-title">{{c.name}}</h4>
+          <p class="card-text">{{c.description}}</p>
         </div>
+      </div>
     </div>
 </div>

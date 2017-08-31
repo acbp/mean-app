@@ -5,15 +5,18 @@ app.controller('productCtrl', productCtrl);
 productCtrl.$inject =[ '$scope','API','$http'];
 
 function productCtrl($scope,API,$http) {
-  const bo = new ProductBO( new ProductREP(API,$http) );
+  const productBO = new ProductBO( new ProductREP(API,$http) );
+  const categoryBO = new CategoryBO( new CategoryREP(API,$http) );
+
   var cacheAllProducts; // guarda ultima lista de produtos
+  var cacheAllCategories; // guarda ultima lista de categorias
   $scope.products;
 
   /**
   * Pega todos os produtos
   */
-  $scope.getAllProducts=function () {
-    bo.getAllProducts(success_getProducts,error_getProducts)
+  $scope.getAllProducts=function (cache) {
+    productBO.getAllProducts(success_getProducts,error_getProducts,cache)
   }
 
   /**
@@ -28,26 +31,25 @@ function productCtrl($scope,API,$http) {
   */
   function error_getProducts(r) {
     // tratamento por status
-
       console.error('error_getProducts');
   }
 
   /**
-  * Tratamento de erro para 'getAllProducts'.
+  * Tratamento de erro para 'getAllCategories'.
   */
-  $scope.getAllCategories = function () {
-    bo.getAllCategories(success_getAllCategories,error_getAllCategories)
+  $scope.getAllCategories = function (cache) {
+    categoryBO.getAllCategories(success_getAllCategories,error_getAllCategories,cache)
   }
 
   /**
-  * Tratamento de erro para 'getAllProducts'.
+  * Tratamento de erro para 'getAllCategories'.
   */
   function success_getAllCategories(r) {
-
+    cacheAllCategories=r;
   }
 
   /**
-  * Tratamento de erro para 'getAllProducts'.
+  * Tratamento de erro para 'getAllCategories'.
   */
   function error_getAllCategories() {
     console.error('error_getAllCategories');
@@ -57,7 +59,7 @@ function productCtrl($scope,API,$http) {
   * Busca produto por nome
   */
   $scope.searchProductName = function () {
-    bo.searchProductName($scope.filterProduct,success_searchProductName,error_searchProductName)
+    productBO.searchProductName($scope.filterProduct,success_searchProductName,error_searchProductName)
   }
 
   /**
@@ -75,7 +77,7 @@ function productCtrl($scope,API,$http) {
   }
 
   $scope.searchProductCategoryName = function () {
-    bo.searchProductCategoryName($scope.filterCategory,success_searchProductCategoryName,error_searchProductCategoryName)
+    categoryBO.searchProductCategoryName($scope.filterCategory,success_searchProductCategoryName,error_searchProductCategoryName)
   }
 
   /**
@@ -93,8 +95,8 @@ function productCtrl($scope,API,$http) {
   }
 
   function init() {
-    $scope.getAllProducts();
-    $scope.getAllCategories();
+    $scope.getAllProducts(true);
+    $scope.getAllCategories(true);
   }
 
   init()

@@ -2,19 +2,19 @@
 
   <h1>Lista de produtos</h1>
 
-  <div class="input-group" ng-submit="searchProductName()">
+  <form class="input-group">
     <input ng-model="filterProduct"type="text" class="form-control" placeholder="Pesquise ou Filtre um produto pelo nome" >
     <span class="input-group-btn">
       <input type="submit" ng-click="searchProductName()" class="btn btn-secondary" type="button" value="Buscar!">
     </span>
-  </div>
+  </form>
 
-  <div class="input-group" ng-submit="searchProductCategoryName()">
+  <form class="input-group" >
     <input ng-model="filterCategory" type="text" class="form-control" placeholder="Pesquise um produto pela categoria" >
     <span class="input-group-btn">
-      <button ng-click="searchProductCategoryName()" class="btn btn-secondary" type="button">Buscar!</button>
+      <input type="submit" ng-click="searchProductCategoryName()" class="btn btn-secondary" type="button" value="Buscar!"/>
     </span>
-  </div>
+  </form>
 
   <div class="card-deck">
       <div class="card" ng-repeat="c in products | filter:{name:filterProduct}">

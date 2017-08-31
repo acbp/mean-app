@@ -18,19 +18,4 @@ const ProductREP = function (url, http) {
   this.searchProductName = function (name,options) {
     return g(url+"productsByName/"+name,options)
   }
-
-  /**
-  * Pega todos os categorias
-  */
-  this.getAllCategories = function (options) {
-    return g(url+'categories',options)
-  }
-
-  /**
-  * Busca categoria por nome
-  */
-  this.searchProductCategoryName = function (name,options) {
-    return g(url+"categoriesByName/"+name,options)
-  }
-
 }
