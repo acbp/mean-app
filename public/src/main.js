@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute','ui.bootstrap','toaster', 'ngAnimate']);
+var app = angular.module('app', ['ngRoute','ui.bootstrap','toaster', 'ngAnimate','checklist-model']);
 
 app.constant('API',location.origin+'/api/')
 

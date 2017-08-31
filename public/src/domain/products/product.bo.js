@@ -1,7 +1,7 @@
 const ProductBO = function ( API) {
   const ref = this;
-  var cacheAllProducts; // guarda ultima lista de produtos
-  var cacheAllCategories; // guarda ultima lista de categorias
+  this.cacheAllProducts; // guarda ultima lista de produtos
+  this.cacheAllCategories; // guarda ultima lista de categorias
   this.openModal;
 
 
@@ -13,11 +13,14 @@ const ProductBO = function ( API) {
         resolve:{
           config:function () {
             return {
-              product:product,
-              edit:true,
+              product:mapProduct({}),
+              categories:ref.cacheAllCategories,
               title:'Criando produto',
 
               salvar:function (_products) {
+                if(!_products){
+                  return toaster.info("Há campos vazios")
+                }
                 ref.saveProduct(
                   _products,
                   function (response) {
@@ -69,9 +72,11 @@ const ProductBO = function ( API) {
             return {
               product:product,
               edit:true,
+              categories:ref.cacheAllCategories,
               title:'Editando produto',
 
               deletarImagem:function (_products) {
+                if(_products)
                 ref.deleteImage(
                   _products.pictures.picture_id,
                   function () {
@@ -82,6 +87,9 @@ const ProductBO = function ( API) {
               },
 
               salvar:function (_products) {
+                if(!_products){
+                  return toaster.info("Há campos vazios")
+                }
                 ref.updateProduct(
                   _products,
                   function (response) {
@@ -160,6 +168,13 @@ const ProductBO = function ( API) {
         resolve:{
           product:function () {
             return product;
+          },
+          categories:function () {
+            return ref.cacheAllCategories.map(function (e) {
+              return product.categories.some(function (ee) {
+                return ee === e.id;
+              }) && e;
+            });
           }
         }
       }
@@ -211,29 +226,29 @@ const ProductBO = function ( API) {
   /**
   * Realiza busca e aplica tratamentos.
   */
-  this.searchProductProductName=function (name,sucesso,erro) {
+  this.searchProductCategoryName=function (name,sucesso,erro) {
     if(!name){
       return ref.getAllProducts(sucesso,erro);
     }
 
-    API.searchProductProductName(name)
+    API.searchProductCategoryName(name)
     .then(
-      success_searchProductName.bind({},sucesso),
-      error_searchProductName.bind({},erro),
+      success_searchProductCategoryName.bind({},sucesso),
+      error_searchProductCategoryName.bind({},erro),
     )
   }
 
   /**
-  * tratamento de erro de searchProductName
+  * tratamento de erro de searchProductCategoryName
   */
-  function error_searchProductName(callback,response) {
+  function error_searchProductCategoryName(callback,response) {
     callback(response);
   }
 
   /**
-  * tratamento de sucesso de searchProductName
+  * tratamento de sucesso de searchProductCategoryName
   */
-  function success_searchProductName(callback,response) {
+  function success_searchProductCategoryName(callback,response) {
     response = response.data;
     callback(response);
   }
@@ -299,12 +314,12 @@ const ProductBO = function ( API) {
   */
   function mapProduct(e ,i ,a) {
     return {
-      name:e.name,
+      name:e.name||'',
       id:e._id,
-      description:e.description,
-      products:e.products,
+      description:e.description||'',
+      categories:e.categories||[],
       // aplica origin do servidor local
-      pictures:e.pictures.map(function (ee) {
+      pictures:e.pictures&&e.pictures.map(function (ee) {
         ee.src=location.origin+ee.src;
         return ee;
       })

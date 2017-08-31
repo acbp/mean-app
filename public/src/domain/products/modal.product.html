@@ -25,6 +25,12 @@
   </div>
 
   Descrição:<p>{{ product.description || "Sem descrição"}}</p>
+  Categorias:
+  <div class="checkbox" ng-repeat="c in categories">
+    <label>
+      {{c.name}}
+    </label>
+  </div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-info" type="button" ng-click="fechar()">Fechar</button>

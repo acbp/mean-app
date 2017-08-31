@@ -10,7 +10,6 @@ const CategoryBO = function ( API ) {
           config:function () {
             return {
               category:category,
-              edit:true,
               title:'Criando categoria',
 
               salvar:function (_categories) {
