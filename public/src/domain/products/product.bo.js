@@ -4,10 +4,155 @@ const ProductBO = function ( API) {
   var cacheAllCategories; // guarda ultima lista de categorias
   this.openModal;
 
+
+  this.create=function (product ,toaster,sucesso,erro) {
+    var modal=ref.openModal(
+      {
+        templateUrl:'src/domain/products/modal.create.html',
+        controller:'modalProductSaveCtrl',
+        resolve:{
+          config:function () {
+            return {
+              product:product,
+              edit:true,
+              title:'Criando produto',
+
+              salvar:function (_products) {
+                ref.saveProduct(
+                  _products,
+                  function (response) {
+                    modal.close();
+                    _products.id=response.data.id;
+                    toaster.success('Produto salva')
+
+                    //ng-model não pegar input file
+                    _products.pictures=document.querySelector("#imagefile");
+
+                    if(_products.pictures){
+
+                      ref.saveImage(
+                        _products,
+                        function (resp) {
+                          toaster.success('Imagem foi salva.')
+                          sucesso();
+                        },
+                        function functionName() {
+                          toaster.error('Imagem não foi salva.')
+                          erro();
+                        }
+                      );
+                    }
+                    else{
+                      sucesso();
+                    }
+                  },
+                  erro
+                );
+              } //salvar
+            }; // resolve
+          }
+        }
+      }
+    )
+  }
+
+  /**
+  * Edita produto
+  */
+  this.edit=function (product ,toaster,sucesso,erro) {
+    var modal=ref.openModal(
+      {
+        templateUrl:'src/domain/products/modal.create.html',
+        controller:'modalProductSaveCtrl',
+        resolve:{
+          config:function () {
+            return {
+              product:product,
+              edit:true,
+              title:'Editando produto',
+
+              deletarImagem:function (_products) {
+                ref.deleteImage(
+                  _products.pictures.picture_id,
+                  function () {
+                    toaster.success("Imagem deletada")
+                    _products.pictures={};
+                  }
+                )
+              },
+
+              salvar:function (_products) {
+                ref.updateProduct(
+                  _products,
+                  function (response) {
+                    modal.close();
+                    _products.id=response.data.id;
+                    toaster.success('Produto atualizado')
+
+                    //ng-model não pegar input file
+                    _products.pictures=document.querySelector("#imagefile");
+
+                    if(_products.pictures){
+                      ref.saveImage(
+                        _products,
+                        sucesso,
+                        erro
+                      );
+                    }else {
+                      sucesso()
+                    }
+                  },
+                  erro
+                );
+              } //salvar
+            }; // resolve
+          }
+        }
+      }
+    )
+  }
+
+  /**
+  * Envia imagem de produto
+  */
+  this.saveImage = function (product,sucesso,erro) {
+    var options={
+        headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+    var formData;
+    for (var i = 0; i < product.pictures.files.length; i++) {
+      formData = new FormData();
+      formData.append("image", product.pictures.files[i]);
+      API.uploadImage(product.id,formData,options).then(sucesso,erro)
+    }
+  }
+
+  /**
+  * Cria produto
+  */
+  this.saveProduct=function (product,sucesso,erro) {
+    if(!product||!product.name ||!product.description ){
+      return erro();
+    }
+    API.saveProduct(product).then(sucesso,erro)
+  }
+
+  /**
+  * Atualiza produto
+  */
+  this.updateProduct=function (product,sucesso,erro) {
+    if(!product||!product.name ||!product.description ){
+      return erro();
+    }
+    API.updateProduct(product).then(sucesso,erro)
+  }
+
   /**
   * Exibe produto
   */
-  this.viewProduct=function (product ,s,e) {
+  this.view=function (product ,s,e) {
     var modal=ref.openModal(
       {
         templateUrl:'src/domain/products/modal.product.html',
@@ -24,7 +169,7 @@ const ProductBO = function ( API) {
   /**
   * Exibe produto
   */
-  this.deleteProduct=function (product) {
+  this.delete=function (product,sucesso,erro) {
     var modalInstance = ref.openModal(
       {
         templateUrl:'src/domain/common/modal.delete.html',
@@ -33,7 +178,7 @@ const ProductBO = function ( API) {
       }
     )
 
-    modalInstance.result.then( ref.delProduct.bind({},product.id));
+    modalInstance.result.then( ref.delProduct.bind({},product.id,sucesso,erro));
   }
 
   /**
@@ -66,12 +211,12 @@ const ProductBO = function ( API) {
   /**
   * Realiza busca e aplica tratamentos.
   */
-  this.searchProductCategoryName=function (name,sucesso,erro) {
+  this.searchProductProductName=function (name,sucesso,erro) {
     if(!name){
       return ref.getAllProducts(sucesso,erro);
     }
 
-    API.searchProductCategoryName(name)
+    API.searchProductProductName(name)
     .then(
       success_searchProductName.bind({},sucesso),
       error_searchProductName.bind({},erro),
@@ -157,7 +302,7 @@ const ProductBO = function ( API) {
       name:e.name,
       id:e._id,
       description:e.description,
-      categories:e.categories,
+      products:e.products,
       // aplica origin do servidor local
       pictures:e.pictures.map(function (ee) {
         ee.src=location.origin+ee.src;

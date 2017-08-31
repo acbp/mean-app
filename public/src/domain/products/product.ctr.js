@@ -8,18 +8,58 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
 
   $scope.products;
 
+    /**
+    * Cria produto em modal
+    */
+    $scope.create = function ( product ) {
+      productBO.create( product, toaster, success_create, error_create )
+    }
+
+    function success_create() {
+      $scope.getAllProducts();
+      toaster.success("Criado produto")
+    }
+    /**
+    * Tratamento de erro para 'create'
+    */
+    function error_create() {
+      toaster.error("Erro ao criado produto")
+    }
+
+    /**
+    * Edita produto
+    */
+    $scope.edit = function ( product ) {
+      productBO.edit( product,toaster,success_edit,error_edit )
+    }
+
+    /**
+    * Tratamento de sucesso para 'edit'
+    */
+    function success_edit() {
+      $scope.getAllProducts();
+      toaster.success('Atualizando lista.')
+    }
+
+    /**
+    * Tratamento de erro para 'edit'
+    */
+    function error_edit() {
+      toaster.error('Ocorreu um erro','Não foi possível editar.');
+    }
+
   /**
   * Exibe produto em modal
   */
-  $scope.viewProduct = function ( product ) {
-    productBO.viewProduct( product )
+  $scope.view = function ( product ) {
+    productBO.view( product )
   }
 
   /**
   * Edita produto
   */
-  $scope.editProduct = function ( product ) {
-    productBO.editProduct( product )
+  $scope.edit = function ( product ) {
+    productBO.edit( product )
   }
 
   /**
@@ -41,8 +81,8 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   /**
   * Deletar após confirmação de modal
   */
-  $scope.deleteProduct = function ( product ) {
-    productBO.deleteProduct( product  , success_deleteProduct, error_deleteProduct )
+  $scope.delete = function ( product ) {
+    productBO.delete( product  , success_deleteProduct, error_deleteProduct )
   }
 
   /**
@@ -83,7 +123,7 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   }
 
   /**
-  * Tratamento de erro para 'getAllCategories'.
+  * Pega todas as categorias.
   */
   $scope.getAllCategories = function () {
     categoryBO.getAllCategories(success_getAllCategories,error_getAllCategories)
@@ -93,7 +133,7 @@ function productCtrl($scope,API,$http,$uibModal,toaster) {
   * Tratamento de erro para 'getAllCategories'.
   */
   function success_getAllCategories(r) {
-    productBO.cacheAllProducts=r;
+    productBO.cacheAllCategories=r;
   }
 
   /**

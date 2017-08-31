@@ -5,7 +5,7 @@ const CategoryBO = function ( API ) {
     var modal=ref.openModal(
       {
         templateUrl:'src/domain/categories/modal.create.html',
-        controller:'modalSaveCtrl',
+        controller:'modalCategorySaveCtrl',
         resolve:{
           config:function () {
             return {
@@ -17,12 +17,13 @@ const CategoryBO = function ( API ) {
                 ref.saveCategory(
                   _categories,
                   function (response) {
+                    modal.close();
                     _categories.id=response.data.id;
                     toaster.success('Categoria salva')
 
                     //ng-model não pegar input file
                     _categories.pictures=document.querySelector("#imagefile");
-
+                    modal.close();
                     if(_categories.pictures)
                     ref.saveImage(
                       _categories,
@@ -53,7 +54,7 @@ const CategoryBO = function ( API ) {
     var modal=ref.openModal(
       {
         templateUrl:'src/domain/categories/modal.create.html',
-        controller:'modalSaveCtrl',
+        controller:'modalCategorySaveCtrl',
         resolve:{
           config:function () {
             return {

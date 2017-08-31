@@ -1,6 +1,4 @@
-app.controller('modalSaveCtrl', modalSaveCtrl);
-
-function modalSaveCtrl($scope,$uibModalInstance,config) {
+app.controller('modalCategorySaveCtrl', function ($scope,$uibModalInstance,config) {
   $scope.title=config.title;
   $scope.edit=config.edit;
   $scope.category=config.category;
@@ -8,3 +6,4 @@ function modalSaveCtrl($scope,$uibModalInstance,config) {
   $scope.salvar=config.salvar;
   $scope.fechar = $uibModalInstance.dismiss
 }
+);

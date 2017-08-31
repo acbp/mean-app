@@ -10,8 +10,8 @@ function categoryCtrl($scope,API,$http,$uibModal,toaster) {
   /**
   * Cria categoria em modal
   */
-  $scope.create = function ( product ) {
-    bo.create( product, toaster, success_create, error_create )
+  $scope.create = function ( category ) {
+    bo.create( category, toaster, success_create, error_create )
   }
 
   function success_create() {
@@ -26,17 +26,10 @@ function categoryCtrl($scope,API,$http,$uibModal,toaster) {
   }
 
   /**
-  * Exibe categoria em modal
-  */
-  $scope.view = function ( product ) {
-    bo.view( product )
-  }
-
-  /**
   * Edita categoria
   */
-  $scope.edit = function ( product ) {
-    bo.edit( product,toaster,success_edit,error_edit )
+  $scope.edit = function ( category ) {
+    bo.edit( category,toaster,success_edit,error_edit )
   }
 
   /**
@@ -54,6 +47,12 @@ function categoryCtrl($scope,API,$http,$uibModal,toaster) {
     toaster.error('Ocorreu um erro','Não foi possível editar.');
   }
 
+  /**
+  * Exibe categoria em modal
+  */
+  $scope.view = function ( category ) {
+    bo.view( category )
+  }
 
   /**
   * Deletar após confirmação de modal
